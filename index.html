@@ -1,0 +1,805 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="color-scheme" content="dark" />
+<meta name="theme-color" content="#0b1220" />
+<title>Midterm 2 Quiz — 150 Questions (Mollhoff Weeks 4–6)</title>
+<style>
+  :root {
+    color-scheme: dark;
+    --bg: #0b1220;
+    --card: #111827;
+    --surface: #1f2937;
+    --surface-hover: #243042;
+    --ink: #e5e7eb;
+    --muted: #9ca3af;
+    --dim: #6b7280;
+    --accent: #60a5fa;
+    --accent-hover: #3b82f6;
+    --accent-soft: #1e3a5f;
+    --good: #34d399;
+    --good-soft: #064e3b;
+    --bad: #f87171;
+    --bad-soft: #4c1d24;
+    --warn: #fbbf24;
+    --warn-soft: #422a06;
+    --border: #2a3446;
+  }
+  * { box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    margin: 0;
+    padding: 16px;
+    line-height: 1.45;
+  }
+  .app { max-width: 1200px; margin: 0 auto; }
+  header { text-align: center; margin-bottom: 18px; }
+  h1 { margin: 0 0 4px 0; font-size: 22px; }
+  .subtitle { color: var(--muted); font-size: 13px; }
+
+  .layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 320px;
+    gap: 16px;
+    align-items: start;
+  }
+  @media (max-width: 920px) {
+    .layout { grid-template-columns: 1fr; }
+    .meters-panel { position: static !important; max-height: none !important; }
+  }
+
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 22px;
+    margin-bottom: 16px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.4);
+  }
+
+  button {
+    background: var(--accent);
+    color: #0b1220;
+    border: 0;
+    padding: 10px 18px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  button:hover { background: var(--accent-hover); color: #fff; }
+  button.secondary { background: #374151; color: var(--ink); }
+  button.secondary:hover { background: #4b5563; color: #fff; }
+  button:disabled { background: #2a3446; color: #6b7280; cursor: not-allowed; }
+
+  .topbar {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 12px; gap: 12px; flex-wrap: wrap;
+  }
+  .topbar .meta { font-size: 13px; color: var(--muted); }
+  .topbar .meta strong { color: var(--ink); }
+  .progress { height: 6px; background: var(--surface); border-radius: 3px; overflow: hidden; margin-bottom: 16px; }
+  .progress-fill { height: 100%; background: var(--accent); transition: width 0.3s; }
+
+  .question-num { font-size: 12px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; }
+  .question-text { font-size: 16px; font-weight: 600; margin: 6px 0 16px 0; }
+  .topic-tag {
+    display: inline-block; font-size: 11px; font-weight: 600;
+    background: var(--accent-soft); color: var(--accent);
+    padding: 2px 8px; border-radius: 4px; margin-left: 6px;
+  }
+
+  .options { display: grid; grid-template-columns: 1fr; gap: 10px; }
+  .option {
+    background: var(--surface);
+    color: var(--ink);
+    border: 2px solid var(--border);
+    border-radius: 8px;
+    padding: 12px 14px;
+    cursor: pointer;
+    text-align: left;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.15s;
+    display: flex; align-items: flex-start; gap: 10px;
+    width: 100%;
+  }
+  .option .key {
+    background: #374151; padding: 2px 8px; border-radius: 4px;
+    font-size: 12px; font-weight: 700; color: var(--ink);
+    font-family: ui-monospace, Menlo, Consolas, monospace;
+    flex-shrink: 0;
+  }
+  .option:hover:not(:disabled) { border-color: var(--accent); background: var(--surface-hover); }
+  .option.correct { border-color: var(--good); background: var(--good-soft); color: var(--good); font-weight: 600; }
+  .option.wrong { border-color: var(--bad); background: var(--bad-soft); color: var(--bad); font-weight: 600; }
+  .option:disabled { cursor: not-allowed; opacity: 0.9; }
+
+  .feedback {
+    margin-top: 14px; padding: 10px 14px; border-radius: 8px;
+    font-size: 14px; font-weight: 600;
+  }
+  .feedback.correct { background: var(--good-soft); color: var(--good); border: 1px solid var(--good); }
+  .feedback.wrong   { background: var(--bad-soft); color: var(--bad);  border: 1px solid var(--bad); }
+
+  .actions { display: flex; gap: 10px; margin-top: 16px; flex-wrap: wrap; }
+
+  .setup-options { display: grid; gap: 12px; margin: 16px 0; }
+  .setup-options label {
+    display: flex; align-items: center; gap: 10px;
+    padding: 12px 14px; border: 1px solid var(--border); border-radius: 8px;
+    cursor: pointer; background: var(--surface); font-size: 14px;
+  }
+  .setup-options label:hover { background: var(--surface-hover); border-color: var(--accent); }
+  .setup-options input { accent-color: var(--accent); margin: 0; }
+
+  /* Results */
+  .score-big {
+    text-align: center; font-size: 56px; font-weight: 800; color: var(--accent);
+    margin: 8px 0;
+  }
+  .score-detail { text-align: center; color: var(--muted); font-size: 14px; margin-bottom: 20px; }
+  .score-pct { font-size: 18px; color: var(--ink); font-weight: 600; }
+
+  .topic-list { margin: 12px 0; }
+  .topic-row {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 14px; border: 1px solid var(--border); border-radius: 8px;
+    margin-bottom: 8px; background: var(--surface);
+  }
+  .topic-name { flex: 1; font-weight: 600; font-size: 14px; }
+  .topic-bar { flex: 2; height: 8px; background: var(--bg); border-radius: 4px; overflow: hidden; }
+  .topic-bar-fill { height: 100%; transition: width 0.4s; }
+  .topic-score { font-size: 13px; color: var(--muted); min-width: 78px; text-align: right; font-variant-numeric: tabular-nums; }
+
+  .weak-banner {
+    background: var(--warn-soft); border: 1px solid var(--warn); color: var(--warn);
+    padding: 12px 14px; border-radius: 8px; margin: 14px 0; font-size: 14px;
+  }
+  .strong-banner {
+    background: var(--good-soft); border: 1px solid var(--good); color: var(--good);
+    padding: 12px 14px; border-radius: 8px; margin: 14px 0; font-size: 14px;
+  }
+
+  .review-section { margin-top: 20px; }
+  .review-section h3 { font-size: 15px; margin: 0 0 10px 0; }
+  .review-item {
+    border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; margin-bottom: 8px; background: var(--surface);
+    font-size: 13px;
+  }
+  .review-item .q { font-weight: 600; margin-bottom: 6px; }
+  .review-item .yours { color: var(--bad); }
+  .review-item .right { color: var(--good); }
+
+  .back-link {
+    display: inline-block; margin-top: 8px; font-size: 13px; color: var(--muted);
+    text-decoration: none;
+  }
+  .back-link:hover { color: var(--accent); }
+
+  /* --- LIVE METERS PANEL --- */
+  .meters-panel {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px;
+    position: sticky;
+    top: 16px;
+    max-height: calc(100vh - 32px);
+    overflow-y: auto;
+  }
+  .meters-panel h2 {
+    font-size: 14px; margin: 0 0 4px 0;
+    text-transform: uppercase; letter-spacing: 0.6px; color: var(--muted);
+  }
+  .meters-panel .legend {
+    font-size: 11px; color: var(--dim); margin-bottom: 12px;
+  }
+  .meter {
+    margin-bottom: 10px;
+  }
+  .meter-head {
+    display: flex; justify-content: space-between; align-items: baseline;
+    font-size: 12px; margin-bottom: 4px; gap: 8px;
+  }
+  .meter-name { font-weight: 600; color: var(--ink); }
+  .meter-name.active { color: var(--accent); }
+  .meter-stat { color: var(--muted); font-variant-numeric: tabular-nums; font-size: 11px; flex-shrink: 0; }
+  .meter-track {
+    position: relative;
+    height: 8px;
+    background: var(--surface);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  .meter-coverage {
+    position: absolute; top: 0; left: 0; bottom: 0;
+    background: #374151;
+    transition: width 0.3s;
+  }
+  .meter-accuracy {
+    position: absolute; top: 0; left: 0; bottom: 0;
+    transition: width 0.3s, background 0.3s;
+  }
+  .meter-tier {
+    font-size: 10px; font-weight: 700;
+    padding: 1px 5px; border-radius: 3px;
+    text-transform: uppercase; letter-spacing: 0.4px;
+    margin-left: 6px;
+  }
+  .meter-tier.untouched { background: #2a3446; color: var(--dim); }
+  .meter-tier.novice    { background: var(--bad-soft); color: var(--bad); }
+  .meter-tier.learning  { background: var(--warn-soft); color: var(--warn); }
+  .meter-tier.solid     { background: var(--accent-soft); color: var(--accent); }
+  .meter-tier.mastered  { background: var(--good-soft); color: var(--good); }
+</style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <h1>Midterm 2 Practice Quiz</h1>
+    <div class="subtitle">150 questions · Dr. Mollhoff Weeks 4–6 · Tissues · Histology · Integumentary System</div>
+  </header>
+
+  <!-- Setup screen -->
+  <div id="setup" class="card">
+    <h2 style="margin-top:0;">Start Quiz</h2>
+    <p style="color: var(--muted); font-size: 14px;">
+      150 multiple-choice questions. Live category meters track your accuracy
+      (colored fill) and coverage (gray ghost fill) as you go. After the quiz
+      you can retake just the questions you missed and keep looping until you score 100%.
+    </p>
+    <div class="setup-options">
+      <label><input type="radio" name="order" value="sequential" checked /> Sequential order (1 → 150)</label>
+      <label><input type="radio" name="order" value="shuffle" /> Shuffle questions</label>
+    </div>
+    <div class="setup-options">
+      <label><input type="checkbox" id="showTopics" checked /> Show topic tag on each question</label>
+      <label><input type="checkbox" id="instantFeedback" checked /> Reveal correct answer after each question</label>
+    </div>
+    <button id="startBtn">Start Quiz</button>
+  </div>
+
+  <!-- Quiz layout: main + side meters -->
+  <div id="quizLayout" class="layout" style="display:none;">
+    <div>
+      <div class="card">
+        <div class="topbar">
+          <div class="meta"><strong id="qIndex">1</strong> of <strong id="qTotal">150</strong></div>
+          <div class="meta">Correct: <strong id="qCorrect">0</strong> · Missed: <strong id="qWrong">0</strong></div>
+        </div>
+        <div class="progress"><div class="progress-fill" id="progFill"></div></div>
+
+        <div class="question-num">Question <span id="qNumDisplay">1</span><span id="topicTag" class="topic-tag"></span></div>
+        <div class="question-text" id="qText"></div>
+        <div class="options" id="qOptions"></div>
+        <div id="feedback"></div>
+        <div class="actions">
+          <button id="nextBtn" style="display:none;">Next →</button>
+          <button id="skipBtn" class="secondary">Skip</button>
+          <button id="endBtn" class="secondary">End Quiz</button>
+        </div>
+      </div>
+    </div>
+
+    <aside class="meters-panel" id="metersPanel">
+      <h2>Category Meters</h2>
+      <div class="legend">
+        Colored = correct · Gray ghost = seen but wrong · Empty = unseen
+      </div>
+      <div id="metersList"></div>
+    </aside>
+  </div>
+
+  <!-- Results -->
+  <div id="results" class="card" style="display:none;">
+    <h2 style="margin-top:0; text-align:center;">Round <span id="roundNum">1</span> Complete</h2>
+    <div class="score-big"><span id="finalScore">0</span>/<span id="finalTotal">0</span></div>
+    <div class="score-detail"><span class="score-pct" id="finalPct">0%</span></div>
+
+    <div id="bannerArea"></div>
+
+    <h3 style="font-size:15px;">Performance by topic</h3>
+    <div id="topicList" class="topic-list"></div>
+
+    <div class="actions" style="justify-content:center; margin-top: 20px;">
+      <button id="retakeMissedBtn">Retake Missed Questions</button>
+      <button id="restartAllBtn" class="secondary">Restart All 150</button>
+    </div>
+
+    <div class="review-section">
+      <h3>Review missed questions (<span id="missedCount">0</span>)</h3>
+      <div id="reviewList"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ============================================================
+   QUESTION BANK (150 Q)
+   Each: { id, topic, q, options:{A,B,C,D}, answer }
+   NOTE: Q123 and Q124 use anatomically correct answers
+         (the supplied key had errors — see commit history).
+   ============================================================ */
+const QUESTIONS = [
+{id:1,topic:"Embryology",q:"After fertilization, the zygote undergoes rapid mitotic divisions to produce early cells that can become literally any cell type in the human body. What is the specific term for this developmental potential?",options:{A:"Multipotent",B:"Pluripotent",C:"Totipotent",D:"Unipotent"},answer:"C"},
+{id:2,topic:"Embryology",q:"Which of the three primary embryonic germ layers is sometimes referred to as the \"outer\" layer and gives rise to both the epidermis of the skin and the nervous system?",options:{A:"Endoderm",B:"Ectoderm",C:"Mesoderm",D:"Mesenchyme"},answer:"B"},
+{id:3,topic:"Embryology",q:"The epithelial linings of the respiratory airways and most of the digestive tract derive from which embryonic germ layer?",options:{A:"Ectoderm",B:"Mesoderm",C:"Endoderm",D:"Neural crest"},answer:"C"},
+{id:4,topic:"Embryology",q:"Connective tissues proper, bone, cartilage, and blood all biologically originate from which embryonic germ layer?",options:{A:"Ectoderm",B:"Endoderm",C:"Mesoderm",D:"Epidermis"},answer:"C"},
+{id:5,topic:"Embryology",q:"Which of the four primary tissue types is unique in that it is the only one to originate from all three embryonic germ layers (ectoderm, mesoderm, and endoderm)?",options:{A:"Muscle tissue",B:"Nervous tissue",C:"Connective tissue",D:"Epithelial tissue"},answer:"D"},
+{id:6,topic:"Tissue Basics",q:"When discussing the structural organization of the human body, a group of similar cells and their extracellular materials working together to perform a specific function is defined as a?",options:{A:"System",B:"Organ",C:"Tissue",D:"Organelle"},answer:"C"},
+{id:7,topic:"Tissue Basics",q:"Histology is strictly defined as the microscopic study of what structures?",options:{A:"Individual cells in isolation",B:"Tissues and their organization",C:"Gross anatomical organs",D:"Pathological diseases"},answer:"B"},
+{id:8,topic:"Tissue Basics",q:"Which major tissue type is characterized by tightly packed cells lining an empty space and possesses minimal to no vasculature?",options:{A:"Connective",B:"Epithelial",C:"Muscle",D:"Nervous"},answer:"B"},
+{id:9,topic:"Epithelial & Junctions",q:"Epithelial cells have a directional orientation, meaning they have a distinct apical (free) surface and a basal (attached) surface. What is the term for this structural characteristic?",options:{A:"Polarity",B:"Cellularity",C:"Regeneration",D:"Avascularity"},answer:"A"},
+{id:10,topic:"Epithelial & Junctions",q:"Because epithelial tissue is avascular, how do these cells obtain the nutrients they need to survive and rapidly regenerate?",options:{A:"Through direct blood vessels penetrating the cells",B:"By diffusion from the underlying vascularized connective tissue",C:"By absorbing air through the apical surface",D:"Through gap junctions connected directly to muscle tissue"},answer:"B"},
+{id:11,topic:"Epithelial & Junctions",q:"Which structure firmly anchors the basal surface of epithelial cells to the underlying connective tissue layer?",options:{A:"Synovial membrane",B:"Basement membrane",C:"Endothelium",D:"Intercalated disc"},answer:"B"},
+{id:12,topic:"Epithelial & Junctions",q:"In epithelial tissue, which type of cell junction acts like a zipper to completely seal adjacent cells, separate the apical and basal surfaces, and prevent the leakage of substances between cells?",options:{A:"Gap junctions",B:"Anchoring junctions",C:"Desmosomes",D:"Tight junctions"},answer:"D"},
+{id:13,topic:"Epithelial & Junctions",q:"Which type of cell junction acts as a passageway that allows for the direct exchange of ions and small molecules between the cytoplasm of adjacent epithelial cells?",options:{A:"Tight junctions",B:"Gap junctions",C:"Hemidesmosomes",D:"Adherens"},answer:"B"},
+{id:14,topic:"Epithelial & Junctions",q:"An epithelial tissue containing only a single layer of flat, scale-like cells is classified as?",options:{A:"Simple cuboidal",B:"Stratified squamous",C:"Simple squamous",D:"Simple columnar"},answer:"C"},
+{id:15,topic:"Epithelial & Junctions",q:"Which specific type of simple squamous epithelium lines the inside of blood vessels and the heart?",options:{A:"Mesothelium",B:"Endothelium",C:"Epidermis",D:"Mucosa"},answer:"B"},
+{id:16,topic:"Epithelial & Junctions",q:"The mesothelium is a specialized simple squamous epithelium that specifically forms which structures in the body?",options:{A:"The inner lining of the stomach",B:"The surface layer of serous membranes",C:"The outermost layer of the skin",D:"The lining of the urinary tract"},answer:"B"},
+{id:17,topic:"Epithelial & Junctions",q:"Which epithelial classification describes cells that are box-like, approximately as tall as they are wide, with a round, centrally located nucleus?",options:{A:"Columnar",B:"Squamous",C:"Cuboidal",D:"Transitional"},answer:"C"},
+{id:18,topic:"Epithelial & Junctions",q:"Where in the human body would you most likely find simple cuboidal epithelium functioning in active secretion and absorption?",options:{A:"The alveoli of the lungs",B:"Kidney tubules and small gland ducts",C:"The epidermis of the skin",D:"The lining of the esophagus"},answer:"B"},
+{id:19,topic:"Epithelial & Junctions",q:"Simple columnar epithelium is characterized by tall, rectangular cells. Where are the nuclei typically located within these cells?",options:{A:"In the direct center of the cell",B:"Near the apical surface",C:"Near the basal end of the cell",D:"Scattered randomly throughout the tissue"},answer:"C"},
+{id:20,topic:"Epithelial & Junctions",q:"Which type of epithelium gives the false appearance of having multiple layers because the irregularly shaped cells place their nuclei at different heights, even though every single cell touches the basement membrane?",options:{A:"Stratified squamous",B:"Pseudostratified columnar",C:"Transitional",D:"Stratified cuboidal"},answer:"B"},
+{id:21,topic:"Epithelial & Junctions",q:"A tissue that consists of multiple stacked layers of cells, where only the deepest basal layer is in contact with the basement membrane, is broadly classified as?",options:{A:"Simple epithelium",B:"Stratified epithelium",C:"Pseudostratified epithelium",D:"Connective tissue proper"},answer:"B"},
+{id:22,topic:"Epithelial & Junctions",q:"The dry, outermost layer of mammalian skin (the epidermis) is formed by which specific protective epithelial tissue?",options:{A:"Non-keratinized stratified squamous",B:"Keratinized stratified squamous",C:"Transitional epithelium",D:"Stratified columnar"},answer:"B"},
+{id:23,topic:"Epithelial & Junctions",q:"Which rare type of stratified epithelium features an outer layer of columnar cells over deeper cuboidal cells, and is physically restricted to transition zones like the male urethra and parts of the pharynx?",options:{A:"Stratified squamous",B:"Pseudostratified columnar",C:"Stratified columnar",D:"Transitional"},answer:"C"},
+{id:24,topic:"Epithelial & Junctions",q:"Transitional epithelium is uniquely capable of expanding and recoiling as organ volume changes. Which organ heavily relies on this specialized tissue type?",options:{A:"Lungs",B:"Heart",C:"Stomach",D:"Urinary bladder"},answer:"D"},
+{id:25,topic:"Glands & Secretion",q:"Glands that are \"ductless\" and secrete their hormonal products directly into the interstitial fluid and bloodstream are classified as?",options:{A:"Exocrine glands",B:"Endocrine glands",C:"Unicellular glands",D:"Merocrine glands"},answer:"B"},
+{id:26,topic:"Glands & Secretion",q:"Sweat glands and sebaceous glands release their contents onto an epithelial surface via a tubular duct. Because of this mechanism, these are examples of?",options:{A:"Endocrine glands",B:"Exocrine glands",C:"Thyroid glands",D:"Adrenal glands"},answer:"B"},
+{id:27,topic:"Glands & Secretion",q:"Goblet cells are specialized unicellular exocrine glands found dispersed within simple and pseudostratified columnar epithelia. What is their primary function?",options:{A:"To produce and secrete mucin/mucus",B:"To act as immune macrophages",C:"To secrete sweat",D:"To produce melanin"},answer:"A"},
+{id:28,topic:"Glands & Secretion",q:"Which type of exocrine secretion mechanism involves the entire glandular cell rupturing to release its accumulated products (e.g., how sebaceous glands release sebum)?",options:{A:"Merocrine",B:"Apocrine",C:"Holocrine",D:"Autocrine"},answer:"C"},
+{id:29,topic:"Tissue Membranes",q:"Tissue membranes consist of thin layers of cells that cover or line body structures. Which two primary tissue types combine to form an \"epithelial membrane\"?",options:{A:"Epithelium and Muscle",B:"Epithelium and Connective Tissue",C:"Connective Tissue and Nervous Tissue",D:"Muscle and Nervous Tissue"},answer:"B"},
+{id:30,topic:"Tissue Membranes",q:"Which type of epithelial membrane specifically lines body cavities and hollow passageways that open directly to the external environment, such as the digestive and respiratory tracts?",options:{A:"Serous membrane",B:"Cutaneous membrane",C:"Mucous membrane",D:"Synovial membrane"},answer:"C"},
+{id:31,topic:"Tissue Membranes",q:"The supportive areolar connective tissue layer that lies directly beneath the epithelium in a mucous membrane is specifically called the?",options:{A:"Mesothelium",B:"Lamina propria",C:"Perichondrium",D:"Epidermis"},answer:"B"},
+{id:32,topic:"Tissue Membranes",q:"Which type of epithelial membrane lines the body's completely sealed internal cavities (e.g., the pericardial and pleural cavities) and secretes a lubricating fluid to reduce organ friction?",options:{A:"Mucous membrane",B:"Synovial membrane",C:"Serous membrane",D:"Cutaneous membrane"},answer:"C"},
+{id:33,topic:"Tissue Membranes",q:"The cutaneous membrane is composed of a keratinized stratified squamous epithelium layered over connective tissue. What is the common anatomical name for this membrane?",options:{A:"The peritoneum",B:"The joint capsule",C:"The skin",D:"The respiratory lining"},answer:"C"},
+{id:34,topic:"Tissue Membranes",q:"Synovial membranes are unique among tissue membranes because they are composed entirely of connective tissue, with no epithelial layer present. Where are these membranes located?",options:{A:"Lining the digestive tract",B:"Encapsulating the brain",C:"Lining the cavities of freely movable joints",D:"Surrounding the heart"},answer:"C"},
+{id:35,topic:"Tissue Membranes",q:"What specific viscous substance is secreted by fibroblasts within synovial membranes to naturally lubricate joints and allow bones to move freely without friction?",options:{A:"Mucin",B:"Hyaluronan (Synovial fluid)",C:"Keratin",D:"Melanin"},answer:"B"},
+{id:36,topic:"Connective Tissue",q:"While epithelial tissue is defined by having tightly packed cells, connective tissue is distinctively characterized by having its cells widely scattered within a substantial amount of what material?",options:{A:"Synovial fluid",B:"Extracellular matrix",C:"Lumen space",D:"Endothelium"},answer:"B"},
+{id:37,topic:"Connective Tissue",q:"The extracellular matrix of connective tissue is primarily composed of various protein fibers suspended in a clear, gel-like substance called?",options:{A:"Cytoplasm",B:"Plasma",C:"Ground substance",D:"Mucus"},answer:"C"},
+{id:38,topic:"Connective Tissue",q:"Which of the following is NOT one of the three main types of protein fibers found in the extracellular matrix of connective tissues?",options:{A:"Collagen fibers",B:"Reticular fibers",C:"Elastic fibers",D:"Actin fibers"},answer:"D"},
+{id:39,topic:"Connective Tissue",q:"Which highly common connective tissue cell is primarily responsible for synthesizing and secreting both the protein fibers and the ground substance of the extracellular matrix?",options:{A:"Macrophage",B:"Fibroblast",C:"Osteocyte",D:"Adipocyte"},answer:"B"},
+{id:40,topic:"Connective Tissue",q:"Which specific type of protein fiber provides connective tissue with high tensile strength and resistance to stretching?",options:{A:"Collagen",B:"Elastin",C:"Keratin",D:"Reticular"},answer:"A"},
+{id:41,topic:"Embryology",q:"In embryonic development, what is the specific name of the stem cell tissue line from which all mature adult connective tissues ultimately derive?",options:{A:"Endoderm",B:"Ectoderm",C:"Mesenchyme",D:"Chondroblast"},answer:"C"},
+{id:42,topic:"Connective Tissue",q:"Adipose tissue is classified as a type of loose connective tissue proper. What is its primary physiological function in the body?",options:{A:"Providing rigid structural support to the body",B:"Sending electrochemical signals",C:"Storing energy reserves and insulating the body",D:"Moving bones at the joints"},answer:"C"},
+{id:43,topic:"Connective Tissue",q:"Dense connective tissue proper is categorized into regular and irregular types based on fiber arrangement. Tendons and ligaments, which require strength in one direction, are classic examples of which type?",options:{A:"Dense regular connective tissue",B:"Dense irregular connective tissue",C:"Elastic connective tissue",D:"Loose areolar tissue"},answer:"A"},
+{id:44,topic:"Cartilage & Bone",q:"Cartilage and bone both provide physical structure to the body. Due to this, they are categorized as what specific sub-type of connective tissue?",options:{A:"Connective tissue proper",B:"Fluid connective tissue",C:"Supportive connective tissue",D:"Embryonic connective tissue"},answer:"C"},
+{id:45,topic:"Cartilage & Bone",q:"The mature cells of cartilage are known as chondrocytes. Because the cartilage matrix is so dense, these cells are forced to reside in small, isolated spaces called?",options:{A:"Canaliculi",B:"Lacunae",C:"Trabeculae",D:"Osteons"},answer:"B"},
+{id:46,topic:"Cartilage & Bone",q:"Which type of supportive connective tissue features a rigid, highly vascularized, calcified matrix containing mineral salts and collagen?",options:{A:"Hyaline cartilage",B:"Dense regular tissue",C:"Bone (osseous tissue)",D:"Reticular tissue"},answer:"C"},
+{id:47,topic:"Connective Tissue",q:"Despite being liquids, blood and lymph fall under which major primary tissue classification?",options:{A:"Supportive connective tissue",B:"Connective tissue proper",C:"Fluid connective tissue",D:"Dense connective tissue"},answer:"C"},
+{id:48,topic:"Connective Tissue",q:"In blood, what is the specific name of the fluid extracellular matrix that suspends the erythrocytes, leukocytes, and platelets?",options:{A:"Serum",B:"Plasma",C:"Interstitial fluid",D:"Lymph"},answer:"B"},
+{id:49,topic:"Tissue Basics",q:"Which of the four primary tissue types is physiologically defined by its excitability, contractility, extensibility, and elasticity?",options:{A:"Nervous tissue",B:"Epithelial tissue",C:"Connective tissue",D:"Muscle tissue"},answer:"D"},
+{id:50,topic:"Muscle & Nervous",q:"Which specific type of muscle tissue is visibly striated under a microscope, contains multiple nuclei per cell, and is under voluntary motor control?",options:{A:"Smooth muscle",B:"Cardiac muscle",C:"Skeletal muscle",D:"Visceral muscle"},answer:"C"},
+{id:51,topic:"Muscle & Nervous",q:"Which specialized muscle tissue is characterized by branched cells, a single central nucleus, involuntary control, and the presence of intercalated discs?",options:{A:"Smooth muscle",B:"Skeletal muscle",C:"Cardiac muscle",D:"Visceral muscle"},answer:"C"},
+{id:52,topic:"Muscle & Nervous",q:"In the human body, which type of muscle tissue is primarily responsible for moving food through the digestive tract via involuntary contractions?",options:{A:"Cardiac muscle",B:"Smooth muscle",C:"Skeletal muscle",D:"Striated muscle"},answer:"B"},
+{id:53,topic:"Muscle & Nervous",q:"Under a microscope, skeletal muscle fibers are easily identifiable because they possess which of the following physical characteristics?",options:{A:"Short, spindle-shaped, and non-striated",B:"Long, cylindrical, multinucleated, and visibly striated",C:"Branched, single-nucleated, and connected by desmosomes",D:"Box-like, tightly packed, and avascular"},answer:"B"},
+{id:54,topic:"Muscle & Nervous",q:"A key physiological property of muscle tissue is \"elasticity.\" What does this specific term mean in the context of a muscle fiber?",options:{A:"The ability to respond to an electrical stimulus",B:"The ability to actively generate force and shorten",C:"The ability to stretch beyond its resting length without tearing",D:"The ability to passively return to its original resting length after being stretched"},answer:"D"},
+{id:55,topic:"Muscle & Nervous",q:"Nervous tissue is composed of two primary functional cell categories. Which cells are directly responsible for sending and receiving electrical impulses?",options:{A:"Neuroglia",B:"Macrophages",C:"Fibroblasts",D:"Neurons"},answer:"D"},
+{id:56,topic:"Muscle & Nervous",q:"When observing a histological slide of nervous tissue, what structural feature creates the characteristic \"swirled and wavy\" texture?",options:{A:"The dense packing of simple squamous cells",B:"Parallel bundles of collagen fibers",C:"Axons twisting, turning, and crisscrossing",D:"The alignment of actin and myosin filaments"},answer:"C"},
+{id:57,topic:"Skin Structure",q:"The integumentary system consists of the skin and its accessory structures. What is the correct anatomical term for the outermost, protective layer of the skin?",options:{A:"Dermis",B:"Epidermis",C:"Hypodermis",D:"Subcutaneous layer"},answer:"B"},
+{id:58,topic:"Skin Structure",q:"Based on its structure and function, the epidermis is classified as what specific type of tissue?",options:{A:"Simple squamous epithelium",B:"Dense irregular connective tissue",C:"Keratinized stratified squamous epithelium",D:"Pseudostratified ciliated columnar epithelium"},answer:"C"},
+{id:59,topic:"Skin Structure",q:"Which distinct layer of the epidermis consists of a single row of actively dividing stem cells that continuously undergo mitosis to replace shed skin cells?",options:{A:"Stratum corneum",B:"Stratum granulosum",C:"Stratum lucidum",D:"Stratum basale"},answer:"D"},
+{id:60,topic:"Skin Structure",q:"The most superficial layer of the epidermis consists of 15 to 30 layers of dead, flattened, keratin-filled cells that routinely flake off (e.g., as dandruff). What is this layer called?",options:{A:"Stratum spinosum",B:"Stratum corneum",C:"Stratum basale",D:"Papillary layer"},answer:"B"},
+{id:61,topic:"Skin Cells & Pigmentation",q:"Which specialized epidermal cell resides in the stratum basale and acts as a sensory receptor for light touch?",options:{A:"Merkel cell",B:"Melanocyte",C:"Langerhans cell",D:"Pacinian corpuscle"},answer:"A"},
+{id:62,topic:"Skin Cells & Pigmentation",q:"Melanocytes are scattered throughout the stratum basale. What is their primary physiological function?",options:{A:"To act as macrophages and engulf bacteria",B:"To produce keratin for waterproofing",C:"To produce melanin pigment to protect cellular DNA from UV radiation",D:"To detect deep pressure and vibration"},answer:"C"},
+{id:63,topic:"Skin Cells & Pigmentation",q:"How is the protective melanin pigment actually distributed to the rest of the cells in the epidermis?",options:{A:"It diffuses through gap junctions between all cells.",B:"Melanosomes containing the pigment are transported out of the melanocytes and taken into the neighboring keratinocytes.",C:"It is carried via capillaries that penetrate the stratum corneum.",D:"It is secreted onto the surface of the skin through sweat ducts."},answer:"B"},
+{id:64,topic:"Skin Cells & Pigmentation",q:"Which of the following conditions is an autoimmune disorder characterized by a localized loss of melanocyte function, resulting in irregular, unpigmented patches of skin?",options:{A:"Albinism",B:"Psoriasis",C:"Vitiligo",D:"Melanoma"},answer:"C"},
+{id:65,topic:"Skin Cells & Pigmentation",q:"Albinism is a genetic condition that affects the integumentary system's appearance and function. What is the underlying physiological cause of this disorder?",options:{A:"The immune system destroys the stratum basale.",B:"An inability of the melanocytes to produce melanin.",C:"An overproduction of carotene in the hypodermis.",D:"The complete absence of melanocytes in the body."},answer:"B"},
+{id:66,topic:"Skin Structure",q:"The dermis is composed of two layers: the superficial papillary layer and the deeper reticular layer. What type of tissue primarily makes up the thick, strong reticular layer?",options:{A:"Loose areolar connective tissue",B:"Dense regular connective tissue",C:"Dense irregular connective tissue",D:"Stratified cuboidal epithelium"},answer:"C"},
+{id:67,topic:"Skin Structure",q:"Fingerprints are unique ridges on the skin's surface. These are formed by mound-like projections of the superficial dermis that interlock with the epidermis. What are these projections called?",options:{A:"Reticular fibers",B:"Lamellae",C:"Dermal papillae",D:"Hair root plexuses"},answer:"C"},
+{id:68,topic:"Skin Structure",q:"The hypodermis (or subcutaneous layer) lies deep to the dermis and anchors the skin to underlying fascia. It is heavily composed of which energy-storing, insulating connective tissue?",options:{A:"Dense regular tissue",B:"Adipose tissue",C:"Hyaline cartilage",D:"Reticular tissue"},answer:"B"},
+{id:69,topic:"Skin Glands & Vitamin D",q:"Exposure to UV-B radiation from the sun triggers the skin to synthesize a vital precursor molecule. What is this molecule a precursor for?",options:{A:"Vitamin A",B:"Vitamin C",C:"Vitamin D",D:"Folic Acid"},answer:"C"},
+{id:70,topic:"Skin Glands & Vitamin D",q:"After the skin produces the initial Vitamin D precursor, which two internal organs are required to further process and convert it into its active metabolic form (calcitriol)?",options:{A:"Liver and kidneys",B:"Heart and lungs",C:"Stomach and small intestine",D:"Pancreas and gallbladder"},answer:"A"},
+{id:71,topic:"Skin Glands & Vitamin D",q:"A severe deficiency in Vitamin D impairs intestinal calcium absorption, leading to soft, weakened, and deformed bones. In children, this specific condition is known as?",options:{A:"Osteoporosis",B:"Osteomalacia",C:"Rickets",D:"Scurvy"},answer:"C"},
+{id:72,topic:"Skin Glands & Vitamin D",q:"Sebaceous glands are accessory structures of the skin that secrete sebum (oil) into hair follicles. By what specific glandular mechanism do they release this secretion?",options:{A:"Merocrine secretion (exocytosis)",B:"Apocrine secretion (pinching off of the apical surface)",C:"Holocrine secretion (the entire cell ruptures and dies)",D:"Endocrine secretion (release into the bloodstream)"},answer:"C"},
+{id:73,topic:"Skin Glands & Vitamin D",q:"Which type of sweat gland is widely distributed across almost the entire body surface and produces a watery secretion primarily to cool the body during thermoregulation?",options:{A:"Eccrine sweat gland",B:"Apocrine sweat gland",C:"Ceruminous gland",D:"Sebaceous gland"},answer:"A"},
+{id:74,topic:"Skin Glands & Vitamin D",q:"Apocrine sweat glands produce a thicker, lipid-rich sweat that local bacteria break down, causing body odor. Where are these specific glands primarily located?",options:{A:"The palms of the hands and soles of the feet",B:"The axillary (armpit) and genital regions",C:"The forehead and scalp",D:"Evenly distributed across the arms and legs"},answer:"B"},
+{id:75,topic:"Skin Glands & Vitamin D",q:"Which small band of smooth muscle attaches to a hair follicle and contracts in response to cold temperatures or sympathetic nervous system stimulation, causing \"goosebumps\"?",options:{A:"Papillary muscle",B:"Arrector pili",C:"Reticular muscle",D:"Myocardium"},answer:"B"},
+{id:76,topic:"Wound Healing",q:"According to Dr. Mollhoff's lectures, wound healing occurs in four distinct stages. What is the primary physiological goal of the first stage, known as Homeostasis?",options:{A:"To fight off invading bacteria",B:"To build new blood vessels",C:"To form a blood clot and stop the bleeding",D:"To permanently replace the damaged tissue with a scar"},answer:"C"},
+{id:77,topic:"Wound Healing",q:"During the \"Inflammation\" stage of wound healing, what key cellular event is occurring within the wound bed?",options:{A:"White blood cells (macrophages) move into the area to clean up cellular debris and bacteria.",B:"Fibroblasts rapidly multiply to close the wound gap.",C:"The epidermal cells shed their nuclei and become keratinized.",D:"The blood vessels intensely constrict to prevent oxygen from entering the wound."},answer:"A"},
+{id:78,topic:"Wound Healing",q:"A patient has a minor cut that was cleaned and bandaged two days ago. Today, the area around the cut exhibits increased redness, swelling, and pain. According to the stages of wound healing, the wound is currently actively in the ________ stage.",options:{A:"Homeostasis",B:"Inflammation",C:"Proliferation",D:"Remodeling"},answer:"B"},
+{id:79,topic:"Wound Healing",q:"During the \"Proliferation\" stage of wound healing, which connective tissue cells are mobilized to rapidly multiply and lay down a dense, random network of new collagen fibers?",options:{A:"Keratinocytes",B:"Adipocytes",C:"Chondrocytes",D:"Fibroblasts"},answer:"D"},
+{id:80,topic:"Wound Healing",q:"The final stage of wound healing is \"Remodeling.\" What notable cellular event characterizes the completion of this stage?",options:{A:"The sudden release of massive amounts of histamine.",B:"The excess cells and blood vessels utilized during the repair process undergo apoptosis and disappear.",C:"The wound begins to actively bleed again to flush out toxins.",D:"The skin completely loses all pigmentation in the injured area."},answer:"B"},
+{id:81,topic:"Wound Healing",q:"When the body heals a deep wound, it often relies on fibrosis rather than true cellular regeneration. What is the ultimate anatomical result of fibrosis?",options:{A:"The generation of identical, fully functional original tissue.",B:"The formation of dense, non-functional scar tissue that restores physical integrity but lacks original accessory structures.",C:"The immediate development of a malignant tumor.",D:"The complete loss of the hypodermis in that region."},answer:"B"},
+{id:82,topic:"Wound Healing",q:"Occasionally, the wound healing process malfunctions and overproduces collagen long after the wound has successfully closed. This results in a raised, hyperpigmented, and overgrown scar known as a?",options:{A:"Callus",B:"Keloid",C:"Melanoma",D:"Striae (stretch mark)"},answer:"B"},
+{id:83,topic:"Skin Cells & Pigmentation",q:"Skin color is primarily determined by melanin, but other physiological factors can alter its appearance. Why might a patient's skin or nail beds appear slightly bluish (a condition called cyanosis)?",options:{A:"An overproduction of carotene from diet.",B:"A buildup of bilirubin due to liver failure.",C:"A prolonged lack of oxygen bound to hemoglobin in the circulating blood.",D:"A severe autoimmune attack on the melanocytes."},answer:"C"},
+{id:84,topic:"Burns & Disorders",q:"Burns are classified by their severity. While first-degree burns typically only damage the epidermis (causing redness), what is the classic hallmark symptom of a second-degree burn?",options:{A:"The skin turns completely black or white.",B:"The formation of fluid-filled blisters as the epidermis separates from the dermis.",C:"The complete destruction of underlying muscle and bone.",D:"A total lack of pain due to destroyed pain receptors."},answer:"B"},
+{id:85,topic:"Burns & Disorders",q:"Why do severe third-degree burns often cause surprisingly little pain in the immediate aftermath of the injury?",options:{A:"The burn forces the brain to release massive amounts of endorphins to mask the pain.",B:"The extreme heat completely destroys the sensory nerve endings located within the dermis.",C:"Third-degree burns only affect the avascular and anervous epidermis.",D:"The inflammatory response entirely prevents pain signals from reaching the spinal cord."},answer:"B"},
+{id:86,topic:"Burns & Disorders",q:"In an emergency clinical setting, healthcare providers use the \"Rule of Nines\" to quickly evaluate a burn victim. What does this rule estimate?",options:{A:"The percentage of total body surface area (BSA) affected by the burn to guide fluid resuscitation.",B:"The depth of the burn in millimeters.",C:"The number of days the burn will take to heal.",D:"The percentage of melanocytes destroyed by the heat."},answer:"A"},
+{id:87,topic:"Burns & Disorders",q:"Which type of skin cancer originates from the actively dividing stem cells of the deepest epidermal layer and is considered the most common, but highly curable if caught early?",options:{A:"Squamous cell carcinoma",B:"Melanoma",C:"Basal cell carcinoma",D:"Kaposi's sarcoma"},answer:"C"},
+{id:88,topic:"Burns & Disorders",q:"Melanoma is clinically considered the most dangerous and deadly form of skin cancer. Why is it so lethal compared to other skin cancers?",options:{A:"It rapidly eats away the underlying bone.",B:"It originates from melanocytes and is highly prone to metastasizing (spreading) to other organs through the lymphatic system or blood.",C:"It prevents the body from ever sweating again, leading to fatal overheating.",D:"It completely halts the synthesis of Vitamin D."},answer:"B"},
+{id:89,topic:"Burns & Disorders",q:"Bedsores (also known as decubitus ulcers) are a homeostatic imbalance of the skin. What primarily causes them?",options:{A:"Bacterial infections contracted from unwashed hospital sheets.",B:"An allergic reaction to latex or synthetic fabrics.",C:"Prolonged, unrelieved pressure on the skin that restricts local blood flow, leading to tissue necrosis.",D:"Excessive exposure to ultraviolet radiation."},answer:"C"},
+{id:90,topic:"Homeostasis & Cell Cycle",q:"The human body regulates its core temperature by triggering sweating and vasodilation when too hot, and shivering and vasoconstriction when too cold. What type of physiological mechanism is this?",options:{A:"Positive feedback loop",B:"Negative feedback loop",C:"Feed-forward cascade",D:"Pathological imbalance"},answer:"B"},
+{id:91,topic:"Homeostasis & Cell Cycle",q:"In the context of a temperature-regulating negative feedback loop, if your core body temperature drops drastically, what acts as the \"effector\" to correct the imbalance?",options:{A:"The temperature receptors in the skin",B:"The hypothalamus in the brain",C:"The skeletal muscles (by shivering to generate heat)",D:"The sweat glands (by releasing sweat)"},answer:"C"},
+{id:92,topic:"Homeostasis & Cell Cycle",q:"The cell cycle must be highly regulated to maintain tissue health and prevent uncontrolled division. During which specific phase of the cell cycle does a cell undergo DNA replication?",options:{A:"G1 phase",B:"S phase",C:"G2 phase",D:"M phase (Mitosis)"},answer:"B"},
+{id:93,topic:"Homeostasis & Cell Cycle",q:"During the cell cycle, if a cell's DNA is damaged beyond repair and fails a checkpoint, a healthy cell will trigger a programmed cell death to prevent tumor formation. This controlled self-destruction is called?",options:{A:"Necrosis",B:"Apoptosis",C:"Lysis",D:"Fibrosis"},answer:"B"},
+{id:94,topic:"Homeostasis & Cell Cycle",q:"Certain genes are responsible for producing proteins that normally stimulate healthy, controlled cell division. However, if these genes mutate, they can cause cancer. What are these genes called?",options:{A:"Tumor suppressor genes",B:"Proto-oncogenes",C:"Apoptotic genes",D:"Histone genes"},answer:"B"},
+{id:95,topic:"Skin Structure",q:"A thin, clear layer of the epidermis called the stratum lucidum is anatomically unique. Where is the only place on the human body you will find this layer?",options:{A:"The lining of the lips",B:"The eyelids",C:"The \"thick skin\" of the palms of the hands and soles of the feet",D:"The scalp"},answer:"C"},
+{id:96,topic:"Skin Structure",q:"A surface scrape heals completely and fades away, but a tattoo remains permanently visible. Based on skin histology, why is tattoo ink permanent?",options:{A:"The ink alters the DNA of the stratum corneum.",B:"The ink is injected deep into the dermis, which does not continuously shed cells like the superficial epidermis does.",C:"The ink is absorbed by the arrector pili muscles and trapped forever.",D:"The ink binds permanently to the calcium salts in the hypodermis."},answer:"B"},
+{id:97,topic:"Burns & Disorders",q:"Eczema and psoriasis are both inflammatory, rash-like conditions of the skin. In medical terminology, these conditions are broadly classified under the general category of?",options:{A:"Carcinomas",B:"Dermatitis",C:"Melanomas",D:"Ulcerations"},answer:"B"},
+{id:98,topic:"Skin Cells & Pigmentation",q:"The epidermis contains specialized cells called Langerhans cells, which reside primarily in the stratum spinosum. What is their biological function?",options:{A:"They act as immune macrophages to engulf invading pathogens and debris.",B:"They synthesize the keratin proteins that harden the skin.",C:"They secrete a waterproofing lipid to prevent dehydration.",D:"They connect the epidermis to the basement membrane."},answer:"A"},
+{id:99,topic:"Cartilage & Bone",q:"If you tear a tendon (dense regular connective tissue) or damage a bone, the tissues will eventually heal, but damage to hyaline cartilage is notoriously slow or impossible to heal completely. What structural characteristic of cartilage accounts for this?",options:{A:"It contains too much calcium matrix to allow cell division.",B:"It is highly innervated by pain receptors that inhibit growth.",C:"It is entirely avascular, meaning it lacks a direct blood supply to deliver repair nutrients.",D:"It lacks an extracellular matrix entirely."},answer:"C"},
+{id:100,topic:"Homeostasis & Cell Cycle",q:"In a cardiovascular feedback loop, specialized receptors in the carotid arteries (baroreceptors) detect a sudden fall in blood pressure and send a signal to the brain. In this homeostatic model, the baroreceptors serve the role of the?",options:{A:"Effector",B:"Control Center",C:"Sensor / Receptor",D:"Set point"},answer:"C"},
+{id:101,topic:"Epithelial & Junctions",q:"Which specific type of epithelial tissue is ideally suited for rapid diffusion and lines the air sacs (alveoli) of the lungs?",options:{A:"Simple cuboidal epithelium",B:"Stratified squamous epithelium",C:"Simple squamous epithelium",D:"Pseudostratified columnar epithelium"},answer:"C"},
+{id:102,topic:"Epithelial & Junctions",q:"What is the defining characteristic of a \"simple\" epithelial tissue?",options:{A:"It contains only one specific type of organelle.",B:"It consists of a single layer of cells where every cell touches the basement membrane.",C:"It lacks a nucleus.",D:"It does not secrete any substances."},answer:"B"},
+{id:103,topic:"Epithelial & Junctions",q:"Which specific specialized cells are scattered throughout simple columnar and pseudostratified epithelia to secrete protective mucus?",options:{A:"Mast cells",B:"Fibroblasts",C:"Goblet cells",D:"Melanocytes"},answer:"C"},
+{id:104,topic:"Epithelial & Junctions",q:"What type of cell junction creates a completely waterproof, \"zipper-like\" seal between adjacent epithelial cells, preventing fluids from leaking between them?",options:{A:"Desmosomes",B:"Gap junctions",C:"Tight junctions",D:"Hemidesmosomes"},answer:"C"},
+{id:105,topic:"Epithelial & Junctions",q:"The stratum spinosum of the epidermis gets its \"spiky\" appearance under a microscope due to which specific anchoring junctions pulling against the shrinking cell membranes?",options:{A:"Gap junctions",B:"Tight junctions",C:"Hemidesmosomes",D:"Desmosomes"},answer:"D"},
+{id:106,topic:"Epithelial & Junctions",q:"Which specialized cell junction securely anchors the deepest layer of epidermal cells (the stratum basale) to the underlying basement membrane?",options:{A:"Adherens junctions",B:"Desmosomes",C:"Hemidesmosomes",D:"Gap junctions"},answer:"C"},
+{id:107,topic:"Muscle & Nervous",q:"Which type of muscle tissue relies heavily on gap junctions within its intercalated discs to allow electrical action potentials to spread rapidly from cell to cell?",options:{A:"Skeletal muscle",B:"Smooth muscle",C:"Cardiac muscle",D:"Visceral muscle"},answer:"C"},
+{id:108,topic:"Epithelial & Junctions",q:"Where in the human body is non-keratinized stratified squamous epithelium naturally located?",options:{A:"The outermost surface of the skin (epidermis)",B:"The inner lining of the mouth, esophagus, and vagina",C:"The lining of the respiratory tract",D:"The kidney tubules"},answer:"B"},
+{id:109,topic:"Connective Tissue",q:"Connective tissue is broadly divided into three major categories based on the consistency of its matrix. What are these three categories?",options:{A:"Proper, Supportive, and Fluid",B:"Simple, Stratified, and Pseudostratified",C:"Loose, Dense, and Irregular",D:"Skeletal, Cardiac, and Smooth"},answer:"A"},
+{id:110,topic:"Connective Tissue",q:"In connective tissue, what forms the \"ground substance\"?",options:{A:"Tightly packed squamous cells",B:"A clear, viscous, gel-like material made of water, glycoproteins, and polysaccharides",C:"Dense bundles of pure collagen",D:"Calcified mineral salts"},answer:"B"},
+{id:111,topic:"Connective Tissue",q:"Which protein fiber found in the connective tissue matrix is exceptionally thin and highly branched, forming a delicate, supportive mesh framework for soft organs like the spleen?",options:{A:"Collagen fibers",B:"Elastic fibers",C:"Reticular fibers",D:"Fibrin fibers"},answer:"C"},
+{id:112,topic:"Connective Tissue",q:"The walls of large arteries must withstand immense pressure and then recoil to their original shape after blood pumps through. Because of this, they contain high amounts of which specific connective tissue?",options:{A:"Dense regular connective tissue",B:"Dense irregular connective tissue",C:"Elastic connective tissue",D:"Reticular connective tissue"},answer:"C"},
+{id:113,topic:"Connective Tissue",q:"What is the fundamental histological difference between loose connective tissue and dense connective tissue?",options:{A:"Dense connective tissue contains no cells, only fibers.",B:"Loose connective tissue is avascular, while dense is highly vascularized.",C:"Loose connective tissue has more ground substance and fewer fibers, while dense has more densely packed fibers and less ground substance.",D:"Dense connective tissue is a fluid, while loose connective tissue is a solid."},answer:"C"},
+{id:114,topic:"Cartilage & Bone",q:"Which specific type of cartilage provides a smooth, low-friction surface for joints and is the most abundant type of cartilage in the body?",options:{A:"Fibrocartilage",B:"Elastic cartilage",C:"Hyaline cartilage",D:"Reticular cartilage"},answer:"C"},
+{id:115,topic:"Cartilage & Bone",q:"Which extremely tough supportive connective tissue contains thick bundles of collagen fibers and forms the shock-absorbing intervertebral discs of the spine?",options:{A:"Dense irregular tissue",B:"Fibrocartilage",C:"Compact bone",D:"Hyaline cartilage"},answer:"B"},
+{id:116,topic:"Muscle & Nervous",q:"Muscle tissue is unique in its ability to actively generate force. What is the specific physiological term for this ability?",options:{A:"Excitability",B:"Extensibility",C:"Elasticity",D:"Contractility"},answer:"D"},
+{id:117,topic:"Muscle & Nervous",q:"Which of the following descriptions accurately matches the histology of smooth muscle cells?",options:{A:"Short, spindle-shaped, single central nucleus, and no visible striations",B:"Long, cylindrical, multinucleated, and visibly striated",C:"Short, branched, striated, with intercalated discs",D:"Flat, scale-like cells arranged in a single layer"},answer:"A"},
+{id:118,topic:"Muscle & Nervous",q:"In the nervous system, which lipid-rich substance is produced by certain neuroglial cells (like Schwann cells) to wrap around and insulate the axons of neurons?",options:{A:"Sebum",B:"Myelin",C:"Keratin",D:"Mucin"},answer:"B"},
+{id:119,topic:"Connective Tissue",q:"A tissue sample reveals a clear, watery extracellular matrix containing dissolved proteins, salts, and circulating specialized cells, but absolutely no supporting protein fibers. What tissue is this?",options:{A:"Hyaline cartilage",B:"Areolar connective tissue",C:"Fluid connective tissue (Blood/Lymph)",D:"Adipose tissue"},answer:"C"},
+{id:120,topic:"Tissue Membranes",q:"Which specialized epithelial membrane specifically lines the body cavities that do NOT open to the external environment (such as the pleural cavity)?",options:{A:"Mucous membrane",B:"Serous membrane",C:"Cutaneous membrane",D:"Synovial membrane"},answer:"B"},
+{id:121,topic:"Tissue Membranes",q:"The mucous membrane (mucosa) consists of an epithelial layer bound to an underlying layer of loose areolar connective tissue. What is this specific underlying connective tissue layer called?",options:{A:"Lamina propria",B:"Mesothelium",C:"Endothelium",D:"Perichondrium"},answer:"A"},
+{id:122,topic:"Skin Structure",q:"Which layer of the skin is highly vascularized and contains hair follicles, sweat glands, and sensory nerve fibers?",options:{A:"Epidermis",B:"Hypodermis",C:"Dermis",D:"Stratum corneum"},answer:"C"},
+{id:123,topic:"Skin Structure",q:"The dermis is composed of two distinct sub-layers. The deeper, thicker layer that provides the skin with its strength and elasticity is called the:",options:{A:"Papillary layer",B:"Reticular layer",C:"Subcutaneous layer",D:"Stratum basale"},answer:"B"},
+{id:124,topic:"Skin Structure",q:"What specific type of tissue primarily comprises the thick reticular layer of the dermis?",options:{A:"Loose areolar connective tissue",B:"Dense regular connective tissue",C:"Dense irregular connective tissue",D:"Stratified squamous epithelium"},answer:"C"},
+{id:125,topic:"Skin Cells & Pigmentation",q:"Which immune cells reside in the stratum spinosum of the epidermis and use their \"tree-like\" dendritic arms to engulf bacteria and present antigens to the immune system?",options:{A:"Melanocytes",B:"Merkel cells",C:"Langerhans cells",D:"Fibroblasts"},answer:"C"},
+{id:126,topic:"Skin Structure",q:"What happens to keratinocytes as they are pushed superficially from the stratum basale toward the stratum corneum?",options:{A:"They divide more rapidly.",B:"They transform into melanocytes.",C:"They fill with keratin, flatten out, and eventually die.",D:"They become actively secreting exocrine glands."},answer:"C"},
+{id:127,topic:"Skin Structure",q:"In the stratum granulosum, keratinocytes produce keratohyalin granules as well as a second type of granule that releases a lipid-rich secretion to waterproof the skin. What are these called?",options:{A:"Melanosomes",B:"Lamellar granules",C:"Synovial vesicles",D:"Macrophages"},answer:"B"},
+{id:128,topic:"Skin Structure",q:"The hypodermis (subcutaneous layer) serves to anchor the skin to the underlying deep fascia and muscles. Which two tissues make up the bulk of the hypodermis?",options:{A:"Dense irregular and dense regular connective tissues",B:"Areolar connective tissue and adipose tissue",C:"Stratified squamous epithelium and smooth muscle",D:"Hyaline cartilage and reticular tissue"},answer:"B"},
+{id:129,topic:"Skin Cells & Pigmentation",q:"Melanin protects the DNA of dividing skin cells from UV radiation damage. Since melanocytes are mostly found in the stratum basale, how does melanin get into the more superficial layers of the epidermis?",options:{A:"The melanocytes physically travel up to the surface.",B:"Melanin is transported through the bloodstream to the stratum corneum.",C:"Melanocytes transfer vesicles of melanin (melanosomes) into neighboring keratinocytes, which then carry it upward.",D:"Melanin diffuses freely through the air."},answer:"C"},
+{id:130,topic:"Skin Cells & Pigmentation",q:"Differences in human skin color are primarily the result of:",options:{A:"Variations in the number of melanocytes a person possesses.",B:"Differences in the amount and type of melanin produced by the melanocytes.",C:"The thickness of the stratum lucidum.",D:"The number of blood vessels in the epidermis."},answer:"B"},
+{id:131,topic:"Skin Structure",q:"Which highly specialized sensory receptor in the skin is located deep in the dermis or hypodermis and is structurally designed to detect high-frequency vibration and deep pressure?",options:{A:"Merkel cell",B:"Meissner corpuscle",C:"Pacinian corpuscle",D:"Free nerve ending"},answer:"C"},
+{id:132,topic:"Skin Structure",q:"Which sensory receptor is located in the dermal papillae (superficial dermis) and is highly sensitive to light touch?",options:{A:"Pacinian corpuscle",B:"Meissner corpuscle",C:"Melanocyte",D:"Fibroblast"},answer:"B"},
+{id:133,topic:"Skin Structure",q:"If you use a rough, gritty facial cleanser to manually exfoliate your skin, which specific epidermal layer are you actively scrubbing away?",options:{A:"Stratum basale",B:"Stratum spinosum",C:"Stratum corneum",D:"Stratum lucidum"},answer:"C"},
+{id:134,topic:"Skin Glands & Vitamin D",q:"Sweat contains water, salts, and a specific antimicrobial protein that helps to naturally fight off bacterial infections on the skin's surface. What is this protein called?",options:{A:"Dermicidin",B:"Keratin",C:"Melanin",D:"Collagen"},answer:"A"},
+{id:135,topic:"Skin Glands & Vitamin D",q:"Sebaceous (oil) glands are widely distributed across the body, typically secreting their sebum into a hair follicle. However, they are notably ABSENT from which regions?",options:{A:"The face and scalp",B:"The palms of the hands and soles of the feet",C:"The chest and back",D:"The axillary and anogenital regions"},answer:"B"},
+{id:136,topic:"Skin Glands & Vitamin D",q:"Eccrine sweat glands are essential for thermoregulation. When body temperature rises, how do these glands respond?",options:{A:"They secrete an oily, lipid-rich substance that traps heat.",B:"They constrict to conserve water.",C:"They secrete a watery fluid onto the skin surface that evaporates, cooling the body.",D:"They produce goosebumps."},answer:"C"},
+{id:137,topic:"Burns & Disorders",q:"Which type of skin cancer is characterized by its high likelihood to metastasize (spread) rapidly through the lymphatic or circulatory systems, making it the most lethal form?",options:{A:"Basal cell carcinoma",B:"Squamous cell carcinoma",C:"Melanoma",D:"Eczema"},answer:"C"},
+{id:138,topic:"Burns & Disorders",q:"In a clinical setting, a patient is observed to have cyanosis (a bluish tint to their skin and nail beds). What physiological emergency does this indicate?",options:{A:"A severe lack of oxygen in the circulating blood",B:"Liver failure and a buildup of bilirubin",C:"An overproduction of melanin",D:"An autoimmune attack on the melanocytes"},answer:"A"},
+{id:139,topic:"Burns & Disorders",q:"A patient is brought in with severe burns covering the front of both of their legs and their entire abdominal and chest region. Doctors use the \"Rule of Nines\" to estimate the affected surface area primarily to:",options:{A:"Determine if the patient will need a skin graft.",B:"Guide the volume of intravenous fluid resuscitation required to prevent shock.",C:"Diagnose the degree of the burn.",D:"Check for a Vitamin D deficiency."},answer:"B"},
+{id:140,topic:"Burns & Disorders",q:"Third-degree burns damage the epidermis, dermis, and sometimes underlying tissue. Why are these severe burns often less painful immediately after the injury than second-degree burns?",options:{A:"The extreme heat completely destroys the sensory nerve endings in the dermis.",B:"The brain completely shuts down all pain receptors in the body.",C:"Third-degree burns only affect the avascular stratum corneum.",D:"The excessive bleeding washes away all inflammatory chemicals."},answer:"A"},
+{id:141,topic:"Burns & Disorders",q:"The failure to occasionally shift the position of a bedridden patient can cause localized tissue death due to restricted blood flow from prolonged pressure. What is the clinical term for this condition?",options:{A:"Dermatitis",B:"Decubitus ulcer (Bedsore)",C:"Melanoma",D:"Vitiligo"},answer:"B"},
+{id:142,topic:"Skin Glands & Vitamin D",q:"A child presents with bowed, weakened legs due to a severe deficiency in Vitamin D, which has hindered their body's ability to absorb calcium. What is this disease called?",options:{A:"Osteoporosis",B:"Osteomalacia",C:"Rickets",D:"Scurvy"},answer:"C"},
+{id:143,topic:"Tissue Basics",q:"Which of the following is an example of an organ?",options:{A:"A single skeletal muscle fiber",B:"The entire respiratory system",C:"The stomach (composed of epithelial, connective, muscle, and nervous tissues)",D:"A red blood cell"},answer:"C"},
+{id:144,topic:"Connective Tissue",q:"Which wandering immune cell in loose connective tissue contains distinct granules and releases histamine to trigger the inflammatory response?",options:{A:"Macrophage",B:"Mast cell",C:"Fibroblast",D:"Adipocyte"},answer:"B"},
+{id:145,topic:"Wound Healing",q:"What happens during the \"remodeling\" phase of wound healing?",options:{A:"A blood clot forms to stop bleeding.",B:"Macrophages flood the area to eat bacteria.",C:"The initial, randomly laid collagen is reorganized for strength, and excess cells/vessels undergo apoptosis.",D:"Fibroblasts rapidly multiply to bridge the open gap."},answer:"C"},
+{id:146,topic:"Wound Healing",q:"A \"hypertrophic\" scar that results from the massive overproduction of collagen, leading to a raised, irregular mass extending beyond the original wound, is known as a:",options:{A:"Callus",B:"Keloid",C:"Melanoma",D:"Blister"},answer:"B"},
+{id:147,topic:"Embryology",q:"Based on its embryonic origins, the epidermis develops from the ________, while the dermis develops from the ________.",options:{A:"Ectoderm; Mesoderm",B:"Mesoderm; Endoderm",C:"Endoderm; Ectoderm",D:"Mesenchyme; Ectoderm"},answer:"A"},
+{id:148,topic:"Connective Tissue",q:"Which fixed cell type in connective tissue proper is considered the less active, mature form of a fibroblast that simply helps maintain the existing matrix?",options:{A:"Macrophage",B:"Adipocyte",C:"Fibrocyte",D:"Osteocyte"},answer:"C"},
+{id:149,topic:"Skin Structure",q:"The small, smooth muscle responsible for pulling a hair follicle upright to generate \"goosebumps\" is the:",options:{A:"Papillary muscle",B:"Arrector pili muscle",C:"Reticular muscle",D:"Myocardium"},answer:"B"},
+{id:150,topic:"Tissue Basics",q:"When examining a tissue under a microscope, you observe that the cells are exceptionally tightly packed together with almost no extracellular matrix between them. The tissue lacks blood vessels but is innervated by nerves. Which of the four primary tissue types are you looking at?",options:{A:"Epithelial tissue",B:"Connective tissue",C:"Muscle tissue",D:"Nervous tissue"},answer:"A"},
+];
+
+/* ============================================================
+   STATE
+   ============================================================ */
+const state = {
+  pool: [],
+  idx: 0,
+  answered: [],
+  missedIds: [],
+  round: 1,
+  settings: { shuffle: false, showTopics: true, instantFeedback: true },
+  topicStats: {}, // { topicName: { correct, seen, total } }
+  currentTopic: null,
+};
+
+/* ============================================================
+   DOM helpers
+   ============================================================ */
+const $ = (id) => document.getElementById(id);
+const setupEl   = $("setup");
+const quizLayoutEl = $("quizLayout");
+const resultsEl = $("results");
+
+function show(view) {
+  setupEl.style.display      = view === "setup"   ? "" : "none";
+  quizLayoutEl.style.display = view === "quiz"    ? "" : "none";
+  resultsEl.style.display    = view === "results" ? "" : "none";
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+function shuffleArr(arr) {
+  const a = arr.slice();
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+/* ============================================================
+   TOPIC METER INIT
+   For each round, totals reflect how many questions in the
+   CURRENT pool belong to each topic. That way meters fill to
+   completion even on a retake-missed round.
+   ============================================================ */
+function initTopicStats() {
+  state.topicStats = {};
+  state.pool.forEach(q => {
+    if (!state.topicStats[q.topic]) {
+      state.topicStats[q.topic] = { correct: 0, seen: 0, total: 0 };
+    }
+    state.topicStats[q.topic].total++;
+  });
+}
+
+function tierFor(seen, accuracy) {
+  if (seen === 0) return { label: "—", cls: "untouched" };
+  if (seen === 1) {
+    return accuracy === 1
+      ? { label: "Solid",   cls: "solid" }
+      : { label: "Novice",  cls: "novice" };
+  }
+  if (accuracy >= 0.9) return { label: "Mastered", cls: "mastered" };
+  if (accuracy >= 0.75) return { label: "Solid",   cls: "solid" };
+  if (accuracy >= 0.5)  return { label: "Learning", cls: "learning" };
+  return { label: "Novice", cls: "novice" };
+}
+
+function accuracyColor(accuracy, seen) {
+  if (seen === 0) return "#374151";
+  if (accuracy >= 0.85) return "var(--good)";
+  if (accuracy >= 0.7)  return "var(--accent)";
+  if (accuracy >= 0.5)  return "var(--warn)";
+  return "var(--bad)";
+}
+
+function renderMeters() {
+  const list = $("metersList");
+  const topics = Object.keys(state.topicStats).sort();
+  list.innerHTML = "";
+  topics.forEach(name => {
+    const s = state.topicStats[name];
+    const accuracy = s.seen ? s.correct / s.seen : 0;
+    const coveragePct = (s.seen / s.total) * 100;
+    const accuracyPct = (s.correct / s.total) * 100;
+    const tier = tierFor(s.seen, accuracy);
+    const color = accuracyColor(accuracy, s.seen);
+
+    const row = document.createElement("div");
+    row.className = "meter";
+    const isActive = name === state.currentTopic;
+    row.innerHTML = `
+      <div class="meter-head">
+        <span class="meter-name ${isActive ? 'active' : ''}">${name}<span class="meter-tier ${tier.cls}">${tier.label}</span></span>
+        <span class="meter-stat">${s.correct}/${s.seen} · ${s.seen}/${s.total}</span>
+      </div>
+      <div class="meter-track">
+        <div class="meter-coverage" style="width:${coveragePct}%;"></div>
+        <div class="meter-accuracy" style="width:${accuracyPct}%; background:${color};"></div>
+      </div>
+    `;
+    list.appendChild(row);
+  });
+}
+
+/* ============================================================
+   START QUIZ
+   ============================================================ */
+$("startBtn").addEventListener("click", () => {
+  state.settings.shuffle         = document.querySelector('input[name="order"]:checked').value === "shuffle";
+  state.settings.showTopics      = $("showTopics").checked;
+  state.settings.instantFeedback = $("instantFeedback").checked;
+
+  state.round = 1;
+  state.pool  = state.settings.shuffle ? shuffleArr(QUESTIONS) : QUESTIONS.slice();
+  state.idx = 0;
+  state.answered = [];
+  state.missedIds = [];
+  initTopicStats();
+
+  show("quiz");
+  renderQuestion();
+  renderMeters();
+});
+
+/* ============================================================
+   QUIZ NAVIGATION
+   ============================================================ */
+function renderQuestion() {
+  const q = state.pool[state.idx];
+  if (!q) { finishRound(); return; }
+  state.currentTopic = q.topic;
+
+  $("qIndex").textContent = state.idx + 1;
+  $("qTotal").textContent = state.pool.length;
+  $("qCorrect").textContent = state.answered.filter(a => a.correct).length;
+  $("qWrong").textContent   = state.answered.filter(a => !a.correct).length;
+  $("progFill").style.width = ((state.idx) / state.pool.length * 100) + "%";
+
+  $("qNumDisplay").textContent = q.id;
+  $("topicTag").textContent = state.settings.showTopics ? q.topic : "";
+  $("topicTag").style.display = state.settings.showTopics ? "inline-block" : "none";
+  $("qText").textContent = q.q;
+  $("feedback").innerHTML = "";
+  $("nextBtn").style.display = "none";
+
+  const opts = $("qOptions");
+  opts.innerHTML = "";
+  ["A","B","C","D"].forEach(letter => {
+    const btn = document.createElement("button");
+    btn.className = "option";
+    btn.innerHTML = `<span class="key">${letter}</span><span>${q.options[letter]}</span>`;
+    btn.addEventListener("click", () => handleAnswer(letter, btn));
+    opts.appendChild(btn);
+  });
+  renderMeters();
+}
+
+function handleAnswer(picked, btn) {
+  const q = state.pool[state.idx];
+  const correct = picked === q.answer;
+  state.answered.push({ id: q.id, picked, correct });
+  if (!correct && !state.missedIds.includes(q.id)) state.missedIds.push(q.id);
+
+  // Update topic stats
+  const ts = state.topicStats[q.topic];
+  ts.seen++;
+  if (correct) ts.correct++;
+
+  const optionBtns = $("qOptions").querySelectorAll(".option");
+  optionBtns.forEach(b => {
+    b.disabled = true;
+    const letter = b.querySelector(".key").textContent;
+    if (state.settings.instantFeedback) {
+      if (letter === q.answer) b.classList.add("correct");
+      else if (letter === picked) b.classList.add("wrong");
+    } else {
+      if (letter === picked) b.style.borderColor = "var(--accent)";
+    }
+  });
+
+  if (state.settings.instantFeedback) {
+    const fb = $("feedback");
+    if (correct) {
+      fb.className = "feedback correct";
+      fb.textContent = "Correct!";
+    } else {
+      fb.className = "feedback wrong";
+      fb.textContent = `Incorrect. Correct answer: ${q.answer}) ${q.options[q.answer]}`;
+    }
+  }
+
+  $("qCorrect").textContent = state.answered.filter(a => a.correct).length;
+  $("qWrong").textContent   = state.answered.filter(a => !a.correct).length;
+
+  $("nextBtn").style.display = "";
+  $("nextBtn").focus();
+  renderMeters();
+}
+
+$("nextBtn").addEventListener("click", () => {
+  state.idx++;
+  if (state.idx >= state.pool.length) finishRound();
+  else renderQuestion();
+});
+
+$("skipBtn").addEventListener("click", () => {
+  const q = state.pool[state.idx];
+  state.answered.push({ id: q.id, picked: null, correct: false });
+  if (!state.missedIds.includes(q.id)) state.missedIds.push(q.id);
+  // Skips count as "seen + wrong" for the meter
+  const ts = state.topicStats[q.topic];
+  ts.seen++;
+  state.idx++;
+  if (state.idx >= state.pool.length) finishRound();
+  else renderQuestion();
+});
+
+$("endBtn").addEventListener("click", () => {
+  if (confirm("End the quiz now and see your results?")) finishRound();
+});
+
+/* ============================================================
+   RESULTS
+   ============================================================ */
+function finishRound() {
+  const total = state.pool.length;
+  const correct = state.answered.filter(a => a.correct).length;
+  const pct = total ? Math.round((correct / total) * 100) : 0;
+
+  $("roundNum").textContent = state.round;
+  $("finalScore").textContent = correct;
+  $("finalTotal").textContent = total;
+  $("finalPct").textContent = pct + "%";
+
+  const topicEntries = Object.entries(state.topicStats)
+    .filter(([_, s]) => s.seen > 0)
+    .map(([name, s]) => ({ name, correct: s.correct, total: s.seen, pct: s.correct / s.seen }))
+    .sort((a, b) => a.pct - b.pct);
+
+  const weakAreas = topicEntries.filter(t => t.pct < 0.7).map(t => t.name);
+
+  const banner = $("bannerArea");
+  if (state.missedIds.length === 0) {
+    banner.innerHTML = `<div class="strong-banner">Perfect score! You got every question correct.</div>`;
+  } else if (weakAreas.length === 0) {
+    banner.innerHTML = `<div class="strong-banner">Strong round — no weak areas (all topics ≥ 70%). Retake the missed questions to finish at 100%.</div>`;
+  } else {
+    banner.innerHTML = `<div class="weak-banner"><strong>Study these areas (under 70%):</strong> ${weakAreas.join(" · ")}</div>`;
+  }
+
+  const topicList = $("topicList");
+  topicList.innerHTML = "";
+  topicEntries.forEach(t => {
+    const tPct = Math.round(t.pct * 100);
+    let color = "var(--good)";
+    if (t.pct < 0.7) color = "var(--bad)";
+    else if (t.pct < 0.85) color = "var(--warn)";
+    const row = document.createElement("div");
+    row.className = "topic-row";
+    row.innerHTML = `
+      <div class="topic-name">${t.name}</div>
+      <div class="topic-bar"><div class="topic-bar-fill" style="width:${tPct}%; background:${color};"></div></div>
+      <div class="topic-score">${t.correct}/${t.total} · ${tPct}%</div>
+    `;
+    topicList.appendChild(row);
+  });
+
+  $("missedCount").textContent = state.missedIds.length;
+  const reviewList = $("reviewList");
+  reviewList.innerHTML = "";
+  if (state.missedIds.length === 0) {
+    reviewList.innerHTML = `<div style="color:var(--muted); font-size:13px;">No missed questions.</div>`;
+  } else {
+    state.missedIds.forEach(id => {
+      const q = QUESTIONS.find(x => x.id === id);
+      const ans = state.answered.find(a => a.id === id);
+      const yourPick = ans && ans.picked
+        ? `${ans.picked}) ${q.options[ans.picked]}`
+        : "(skipped)";
+      const item = document.createElement("div");
+      item.className = "review-item";
+      item.innerHTML = `
+        <div class="q">Q${q.id} — ${q.q}</div>
+        <div class="yours">Your answer: ${yourPick}</div>
+        <div class="right">Correct answer: ${q.answer}) ${q.options[q.answer]}</div>
+        <div style="font-size:11px; color:var(--muted); margin-top:4px;">Topic: ${q.topic}</div>
+      `;
+      reviewList.appendChild(item);
+    });
+  }
+
+  $("retakeMissedBtn").disabled = state.missedIds.length === 0;
+  $("retakeMissedBtn").textContent = state.missedIds.length === 0
+    ? "All correct — nothing to retake"
+    : `Retake ${state.missedIds.length} Missed Question${state.missedIds.length === 1 ? "" : "s"}`;
+
+  show("results");
+}
+
+/* ============================================================
+   RETAKE / RESTART
+   ============================================================ */
+$("retakeMissedBtn").addEventListener("click", () => {
+  if (state.missedIds.length === 0) return;
+  const missedSet = new Set(state.missedIds);
+  state.pool = QUESTIONS.filter(q => missedSet.has(q.id));
+  if (state.settings.shuffle) state.pool = shuffleArr(state.pool);
+  state.idx = 0;
+  state.answered = [];
+  state.missedIds = [];
+  state.round++;
+  initTopicStats();
+  show("quiz");
+  renderQuestion();
+  renderMeters();
+});
+
+$("restartAllBtn").addEventListener("click", () => {
+  show("setup");
+});
+</script>
+</body>
+</html>
