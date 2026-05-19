@@ -320,6 +320,42 @@
   .meter-tier.learning  { background: var(--warn-soft); color: var(--warn); }
   .meter-tier.solid     { background: var(--accent-soft); color: var(--accent); }
   .meter-tier.mastered  { background: var(--good-soft); color: var(--good); }
+
+  /* --- FLASHCARDS --- */
+  .flashcard {
+    position: relative;
+    min-height: 280px;
+    background: var(--surface);
+    border: 2px solid var(--border);
+    border-radius: 12px;
+    padding: 28px 24px;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: border-color 0.15s, background 0.15s;
+  }
+  .flashcard:hover { border-color: var(--accent); }
+  .flashcard.flipped { background: var(--card); border-color: var(--good); }
+  .fc-face { width: 100%; text-align: center; }
+  .flashcard:not(.flipped) .fc-back { display: none; }
+  .flashcard.flipped .fc-front { display: none; }
+  .fc-topic { font-size: 11px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 10px; }
+  .fc-prompt { font-size: 17px; font-weight: 600; line-height: 1.45; margin: 12px 0; color: var(--ink); }
+  .fc-answer-label { font-size: 11px; font-weight: 700; color: var(--good); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 10px; }
+  .fc-answer { font-size: 19px; font-weight: 700; line-height: 1.45; color: var(--good); margin: 8px 0 4px 0; }
+  .fc-answer-q { font-size: 13px; color: var(--muted); margin-top: 14px; font-style: italic; }
+  .fc-hint { font-size: 11px; color: var(--dim); margin-top: 16px; text-transform: uppercase; letter-spacing: 0.5px; }
+  .fc-slide-frame {
+    margin: 0 auto 14px auto;
+    max-width: 720px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+    background: #000;
+  }
+  .fc-slide-frame img {
+    display: block; width: 100%; max-height: 360px;
+    object-fit: contain; background: #000;
+  }
 </style>
 </head>
 <body>
@@ -350,6 +386,8 @@
       <button id="startBtn">Start Quiz (225 MCQs)</button>
       <button id="startSlideBtn" class="secondary">Start Slide-ID Quiz (50 Lecture Slides)</button>
       <button id="byCategoryBtn" class="secondary">Quiz by Category</button>
+      <button id="startFlashBtn" class="secondary">MCQ Flashcards</button>
+      <button id="startFlashSlideBtn" class="secondary">Slide Flashcards</button>
     </div>
 
     <!-- Category picker (hidden by default) -->
@@ -434,6 +472,38 @@
     <div class="review-section">
       <h3>Review missed questions (<span id="missedCount">0</span>)</h3>
       <div id="reviewList"></div>
+    </div>
+  </div>
+
+  <!-- Flashcards view -->
+  <div id="flashcards" class="card" style="display:none;">
+    <div class="topbar">
+      <div class="meta"><strong id="fcIndex">1</strong> of <strong id="fcTotal">0</strong> · <span id="fcMode">MCQ Flashcards</span></div>
+      <div class="meta">Topic: <strong id="fcTopicMeta">—</strong></div>
+    </div>
+    <div class="progress"><div class="progress-fill" id="fcProgFill"></div></div>
+
+    <div class="flashcard" id="flashcard">
+      <div class="fc-face fc-front">
+        <div class="fc-topic" id="fcTopic"></div>
+        <div id="fcSlideHost"></div>
+        <div class="fc-prompt" id="fcPrompt"></div>
+        <div class="fc-hint">Click card or press Space to reveal</div>
+      </div>
+      <div class="fc-face fc-back">
+        <div class="fc-answer-label">Answer</div>
+        <div class="fc-answer" id="fcAnswer"></div>
+        <div class="fc-answer-q" id="fcAnswerQ"></div>
+        <div class="fc-hint">Click card or press Space to flip back</div>
+      </div>
+    </div>
+
+    <div class="actions" style="margin-top:16px;">
+      <button id="fcPrev" class="secondary">← Prev</button>
+      <button id="fcFlip">Flip Card</button>
+      <button id="fcNext">Next →</button>
+      <button id="fcShuffleBtn" class="secondary">Shuffle Deck</button>
+      <button id="fcEnd" class="secondary">End Session</button>
     </div>
   </div>
 </div>
@@ -786,10 +856,12 @@ const setupEl   = $("setup");
 const quizLayoutEl = $("quizLayout");
 const resultsEl = $("results");
 
+const flashEl = $("flashcards");
 function show(view) {
-  setupEl.style.display      = view === "setup"   ? "" : "none";
-  quizLayoutEl.style.display = view === "quiz"    ? "" : "none";
-  resultsEl.style.display    = view === "results" ? "" : "none";
+  setupEl.style.display      = view === "setup"      ? "" : "none";
+  quizLayoutEl.style.display = view === "quiz"       ? "" : "none";
+  resultsEl.style.display    = view === "results"    ? "" : "none";
+  flashEl.style.display      = view === "flashcards" ? "" : "none";
   window.scrollTo({ top: 0, behavior: "smooth" });
 }
 
@@ -986,6 +1058,83 @@ $("startSlideBtn").addEventListener("click", () => beginQuiz(SLIDE_QUESTIONS, "s
     beginQuiz(filtered, name);
   });
 })();
+
+/* ============================================================
+   FLASHCARD MODE
+   Prompt-and-answer study cards drawn from either bank.
+   Independent of the quiz scoring/meters flow.
+   ============================================================ */
+const fcState = { deck: [], idx: 0, flipped: false, mode: "mcq" };
+
+function beginFlashcards(bank, modeLabel) {
+  fcState.deck = (document.querySelector('input[name="order"]:checked').value === "shuffle")
+    ? shuffleArr(bank)
+    : bank.slice();
+  fcState.idx = 0;
+  fcState.flipped = false;
+  fcState.mode = modeLabel;
+  $("fcMode").textContent = modeLabel;
+  $("fcTotal").textContent = fcState.deck.length;
+  show("flashcards");
+  renderFlashcard();
+}
+
+function renderFlashcard() {
+  const card = fcState.deck[fcState.idx];
+  if (!card) return;
+  $("fcIndex").textContent = fcState.idx + 1;
+  $("fcProgFill").style.width = ((fcState.idx + 1) / fcState.deck.length * 100) + "%";
+  $("fcTopic").textContent = card.topic;
+  $("fcTopicMeta").textContent = card.topic;
+  $("fcPrompt").textContent = card.q;
+  $("fcAnswer").textContent = card.answer + ") " + card.options[card.answer];
+  $("fcAnswerQ").textContent = card.q;
+
+  // Slide image, if present on this card
+  const slideHost = $("fcSlideHost");
+  slideHost.innerHTML = "";
+  if (card.slideImg) {
+    const frame = document.createElement("div");
+    frame.className = "fc-slide-frame";
+    const img = document.createElement("img");
+    img.alt = "Lecture slide preview";
+    img.src = card.slideImg;
+    img.onerror = () => { frame.innerHTML = '<div style="padding:18px; color:var(--muted); font-size:13px; text-align:center; background:var(--surface);">(Image unavailable: ' + card.slideImg + ')</div>'; };
+    frame.appendChild(img);
+    slideHost.appendChild(frame);
+  }
+
+  fcState.flipped = false;
+  $("flashcard").classList.remove("flipped");
+  $("fcPrev").disabled = fcState.idx === 0;
+  $("fcNext").disabled = fcState.idx === fcState.deck.length - 1;
+}
+
+function flipFlashcard() {
+  fcState.flipped = !fcState.flipped;
+  $("flashcard").classList.toggle("flipped", fcState.flipped);
+}
+
+$("startFlashBtn").addEventListener("click", () => beginFlashcards(QUESTIONS, "MCQ Flashcards"));
+$("startFlashSlideBtn").addEventListener("click", () => beginFlashcards(SLIDE_QUESTIONS, "Slide Flashcards"));
+$("flashcard").addEventListener("click", flipFlashcard);
+$("fcFlip").addEventListener("click", flipFlashcard);
+$("fcPrev").addEventListener("click", () => { if (fcState.idx > 0) { fcState.idx--; renderFlashcard(); } });
+$("fcNext").addEventListener("click", () => { if (fcState.idx < fcState.deck.length - 1) { fcState.idx++; renderFlashcard(); } });
+$("fcShuffleBtn").addEventListener("click", () => {
+  fcState.deck = shuffleArr(fcState.deck);
+  fcState.idx = 0;
+  renderFlashcard();
+});
+$("fcEnd").addEventListener("click", () => show("setup"));
+
+document.addEventListener("keydown", (e) => {
+  if (flashEl.style.display === "none") return;
+  if (e.target.tagName === "INPUT" || e.target.tagName === "TEXTAREA") return;
+  if (e.key === " " || e.key === "Enter") { e.preventDefault(); flipFlashcard(); }
+  else if (e.key === "ArrowRight") { $("fcNext").click(); }
+  else if (e.key === "ArrowLeft")  { $("fcPrev").click(); }
+});
 
 /* ============================================================
    QUIZ NAVIGATION
