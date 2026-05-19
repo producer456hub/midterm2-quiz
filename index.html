@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <meta name="color-scheme" content="dark" />
 <meta name="theme-color" content="#0b1220" />
-<title>Midterm 2 Quiz — 150 Questions (Mollhoff Weeks 4–6)</title>
+<title>Midterm 2 Quiz — 200 Questions (Mollhoff Weeks 4–6)</title>
 <style>
   :root {
     color-scheme: dark;
@@ -244,19 +244,19 @@
 <div class="app">
   <header>
     <h1>Midterm 2 Practice Quiz</h1>
-    <div class="subtitle">150 questions · Dr. Mollhoff Weeks 4–6 · Tissues · Histology · Integumentary System</div>
+    <div class="subtitle">200 questions · Dr. Mollhoff Weeks 4–6 · Tissues · Histology · Integumentary System</div>
   </header>
 
   <!-- Setup screen -->
   <div id="setup" class="card">
     <h2 style="margin-top:0;">Start Quiz</h2>
     <p style="color: var(--muted); font-size: 14px;">
-      150 multiple-choice questions. Live category meters track your accuracy
+      200 multiple-choice questions. Live category meters track your accuracy
       (colored fill) and coverage (gray ghost fill) as you go. After the quiz
       you can retake just the questions you missed and keep looping until you score 100%.
     </p>
     <div class="setup-options">
-      <label><input type="radio" name="order" value="sequential" checked /> Sequential order (1 → 150)</label>
+      <label><input type="radio" name="order" value="sequential" checked /> Sequential order (1 → 200)</label>
       <label><input type="radio" name="order" value="shuffle" /> Shuffle questions</label>
     </div>
     <div class="setup-options">
@@ -271,7 +271,7 @@
     <div>
       <div class="card">
         <div class="topbar">
-          <div class="meta"><strong id="qIndex">1</strong> of <strong id="qTotal">150</strong></div>
+          <div class="meta"><strong id="qIndex">1</strong> of <strong id="qTotal">200</strong></div>
           <div class="meta">Correct: <strong id="qCorrect">0</strong> · Missed: <strong id="qWrong">0</strong></div>
         </div>
         <div class="progress"><div class="progress-fill" id="progFill"></div></div>
@@ -310,7 +310,7 @@
 
     <div class="actions" style="justify-content:center; margin-top: 20px;">
       <button id="retakeMissedBtn">Retake Missed Questions</button>
-      <button id="restartAllBtn" class="secondary">Restart All 150</button>
+      <button id="restartAllBtn" class="secondary">Restart All 200</button>
     </div>
 
     <div class="review-section">
@@ -322,7 +322,7 @@
 
 <script>
 /* ============================================================
-   QUESTION BANK (150 Q)
+   QUESTION BANK (200 Q)
    Each: { id, topic, q, options:{A,B,C,D}, answer }
    NOTE: Q123 and Q124 use anatomically correct answers
          (the supplied key had errors — see commit history).
@@ -478,6 +478,56 @@ const QUESTIONS = [
 {id:148,topic:"Connective Tissue",q:"Which fixed cell type in connective tissue proper is considered the less active, mature form of a fibroblast that simply helps maintain the existing matrix?",options:{A:"Macrophage",B:"Adipocyte",C:"Fibrocyte",D:"Osteocyte"},answer:"C"},
 {id:149,topic:"Skin Structure",q:"The small, smooth muscle responsible for pulling a hair follicle upright to generate \"goosebumps\" is the:",options:{A:"Papillary muscle",B:"Arrector pili muscle",C:"Reticular muscle",D:"Myocardium"},answer:"B"},
 {id:150,topic:"Tissue Basics",q:"When examining a tissue under a microscope, you observe that the cells are exceptionally tightly packed together with almost no extracellular matrix between them. The tissue lacks blood vessels but is innervated by nerves. Which of the four primary tissue types are you looking at?",options:{A:"Epithelial tissue",B:"Connective tissue",C:"Muscle tissue",D:"Nervous tissue"},answer:"A"},
+{id:151,topic:"Skin Cells & Pigmentation",q:"According to Dr. Mollhoff's lecture, what is a major clinical consequence of the historical underrepresentation of darkly pigmented skin in medical textbooks and training?",options:{A:"An over-prescription of Vitamin D supplements",B:"Delayed or missed diagnoses of skin conditions (like cyanosis, rashes, or skin cancers) in patients with darker skin",C:"An inability to perform skin grafts",D:"A misunderstanding of how the stratum corneum functions"},answer:"B"},
+{id:152,topic:"Wound Healing",q:"While a keloid is a raised, overgrown scar, a scar that heals flat but remains noticeably red or pink due to increased blood flow and localized inflammation is classified as a(n):",options:{A:"Hypopigmented scar",B:"Melanoma",C:"Erythematous scar",D:"Decubitus ulcer"},answer:"C"},
+{id:153,topic:"Wound Healing",q:"Following an injury or severe acne, the skin may heal but leave behind a flat, dark mark caused by an overproduction of melanin during the healing process. This is known as:",options:{A:"Post-Inflammatory Hyperpigmentation",B:"Vitiligo",C:"Erythematous scarring",D:"Albinism"},answer:"A"},
+{id:154,topic:"Wound Healing",q:"A scar that heals flat but appears completely white or much lighter than the surrounding skin due to a lack of melanin production in the scar tissue is called a(n):",options:{A:"Erythematous scar",B:"Hyperpigmented scar",C:"Keloid",D:"Hypopigmented scar"},answer:"D"},
+{id:155,topic:"Skin Structure",q:"Rapid growth, sudden weight gain, or pregnancy can cause \"striae\" (stretch marks) to appear on the skin. Physiologically, what exactly is a stretch mark?",options:{A:"A viral infection of the epidermis",B:"A microscopic tearing of the collagen fibers in the dermis when it is stretched beyond its elastic limits",C:"An overproduction of keratin in the stratum corneum",D:"A severe chemical burn to the hypodermis"},answer:"B"},
+{id:156,topic:"Skin Structure",q:"As the integumentary system ages, the epidermis begins to thin out. What cellular change primarily causes this?",options:{A:"An increase in the number of Langerhans cells",B:"The sudden disappearance of the stratum lucidum",C:"A decrease in the mitotic (cell division) activity of the stem cells in the stratum basale",D:"A massive increase in melanin production"},answer:"C"},
+{id:157,topic:"Skin Structure",q:"Wrinkling and sagging of the skin are classic signs of aging. These occur primarily because:",options:{A:"The dermis produces significantly less collagen and elastin fibers over time.",B:"The hypodermis fills with too much adipose tissue.",C:"The stratum corneum becomes permanently hardened.",D:"The body produces too much Vitamin D."},answer:"A"},
+{id:158,topic:"Skin Glands & Vitamin D",q:"Elderly individuals are often more susceptible to overheating and have noticeably drier skin. What age-related change in the integumentary system accounts for this?",options:{A:"An increase in blood flow to the papillary layer",B:"A decrease in the activity of eccrine sweat glands and sebaceous (oil) glands",C:"An overproduction of thick, terminal hair",D:"The complete loss of the basement membrane"},answer:"B"},
+{id:159,topic:"Skin Structure",q:"Hair growth occurs in three distinct phases. Which phase is the \"active growth\" phase where cells in the hair root are rapidly dividing to lengthen the hair?",options:{A:"Anagen phase",B:"Catagen phase",C:"Telogen phase",D:"Remodeling phase"},answer:"A"},
+{id:160,topic:"Skin Structure",q:"Which phase of the hair growth cycle is a short \"transitional\" phase where active growth stops and the hair follicle begins to shrink?",options:{A:"Anagen phase",B:"Catagen phase",C:"Telogen phase",D:"Proliferation phase"},answer:"B"},
+{id:161,topic:"Skin Structure",q:"The final phase of the hair growth cycle is a \"resting\" phase, lasting a few months, during which the old hair eventually falls out to make room for a new hair. This is the:",options:{A:"Anagen phase",B:"Catagen phase",C:"Telogen phase",D:"Exfoliation phase"},answer:"C"},
+{id:162,topic:"Skin Structure",q:"In the anatomy of a nail, the specialized region of actively dividing cells deep beneath the skin that is responsible for all new nail growth is called the:",options:{A:"Nail bed",B:"Nail root / Nail matrix",C:"Cuticle",D:"Lunula"},answer:"B"},
+{id:163,topic:"Skin Structure",q:"The thick, white, crescent-shaped area at the base of the nail body (where the thick matrix blocks the pink color of the underlying blood vessels) is called the:",options:{A:"Eponychium",B:"Hyponychium",C:"Lunula",D:"Phalanx"},answer:"C"},
+{id:164,topic:"Skin Structure",q:"The fold of skin at the proximal end of the nail that we commonly refer to as the \"cuticle\" has a specific anatomical name. What is it?",options:{A:"Eponychium",B:"Hyponychium",C:"Lunula",D:"Epidermis"},answer:"A"},
+{id:165,topic:"Skin Structure",q:"A single strand of hair has three concentric layers. From the innermost core to the outermost surface, these layers are:",options:{A:"Cuticle, Cortex, Medulla",B:"Medulla, Cortex, Cuticle",C:"Cortex, Medulla, Cuticle",D:"Medulla, Cuticle, Cortex"},answer:"B"},
+{id:166,topic:"Skin Structure",q:"At the very base of a hair follicle is the hair papilla. What is the primary function of this structure?",options:{A:"To produce the hair's pigment",B:"To secrete sebum into the hair",C:"To house the blood capillaries that provide nutrients to the growing hair",D:"To pull the hair upright during cold weather"},answer:"C"},
+{id:167,topic:"Skin Cells & Pigmentation",q:"While melanin is the primary pigment of the skin, a person's diet can also affect their skin color. Consuming massive amounts of certain vegetables (like carrots) can cause the skin to take on a yellowish-orange tint due to the accumulation of:",options:{A:"Hemoglobin",B:"Bilirubin",C:"Carotene",D:"Keratin"},answer:"C"},
+{id:168,topic:"Skin Cells & Pigmentation",q:"In individuals with very little melanin, the skin often takes on a pinkish or reddish hue. What biological substance is visibly showing through the translucent epidermis to cause this?",options:{A:"Carotene",B:"Hemoglobin in the blood vessels of the dermis",C:"Pure collagen fibers",D:"Adipose tissue in the hypodermis"},answer:"B"},
+{id:169,topic:"Epithelial & Junctions",q:"Many simple columnar epithelial cells lining the digestive tract feature tiny, finger-like projections on their apical surface. What are these structures, and what is their function?",options:{A:"Cilia; to sweep mucus across the cell surface",B:"Microvilli; to drastically increase the surface area for nutrient absorption",C:"Flagella; to propel the entire cell forward",D:"Desmosomes; to anchor the cell to the basement membrane"},answer:"B"},
+{id:170,topic:"Epithelial & Junctions",q:"The pseudostratified columnar epithelium lining the trachea features long, hair-like extensions on the apical surface that actively beat to sweep debris-filled mucus out of the lungs. These structures are called:",options:{A:"Microvilli",B:"Cilia",C:"Villi",D:"Canaliculi"},answer:"B"},
+{id:171,topic:"Burns & Disorders",q:"Which form of skin cancer specifically affects the keratinocytes of the stratum spinosum and often appears as a scaly, reddened bump on the scalp, ears, or lower lip?",options:{A:"Basal cell carcinoma",B:"Melanoma",C:"Squamous cell carcinoma",D:"Kaposi's sarcoma"},answer:"C"},
+{id:172,topic:"Burns & Disorders",q:"Because they originate from the deepest layer of the epidermis, which type of skin cancer cells are the least likely to metastasize (spread) and are cured by surgical removal in 99% of cases?",options:{A:"Squamous cell carcinomas",B:"Basal cell carcinomas",C:"Melanomas",D:"Keloids"},answer:"B"},
+{id:173,topic:"Burns & Disorders",q:"The \"ABCDE\" rule is a clinical tool used to detect the early signs of which highly aggressive and deadly skin cancer?",options:{A:"Basal cell carcinoma",B:"Squamous cell carcinoma",C:"Melanoma",D:"Eczema"},answer:"C"},
+{id:174,topic:"Burns & Disorders",q:"If you accidentally touch a hot stove and immediately pull your hand away, suffering only mild redness and localized pain (with no blistering), you have sustained a:",options:{A:"First-degree burn",B:"Second-degree burn",C:"Third-degree burn",D:"Fourth-degree burn"},answer:"A"},
+{id:175,topic:"Burns & Disorders",q:"Which degree of burn specifically damages both the epidermis and the upper region of the dermis, resulting in painful, fluid-filled blisters?",options:{A:"First-degree burn",B:"Second-degree burn",C:"Third-degree burn",D:"Fourth-degree burn"},answer:"B"},
+{id:176,topic:"Burns & Disorders",q:"Which type of severe burn completely destroys the epidermis and dermis, damages the underlying hypodermis, and often requires skin grafting because the local tissue cannot regenerate?",options:{A:"First-degree burn",B:"Second-degree burn",C:"Third-degree burn",D:"Radiation burn"},answer:"C"},
+{id:177,topic:"Glands & Secretion",q:"When comparing exocrine glands, eccrine sweat glands utilize ________ secretion (releasing fluid via vesicles), while sebaceous glands utilize ________ secretion (the whole cell ruptures).",options:{A:"Apocrine; Holocrine",B:"Merocrine; Holocrine",C:"Holocrine; Apocrine",D:"Merocrine; Paracrine"},answer:"B"},
+{id:178,topic:"Skin Glands & Vitamin D",q:"Which highly specialized type of sweat gland does NOT become active until puberty?",options:{A:"Eccrine sweat glands",B:"Apocrine sweat glands",C:"Sebaceous glands",D:"Ceruminous glands"},answer:"B"},
+{id:179,topic:"Connective Tissue",q:"If a pathologist examines a tissue and sees a loose, random web of collagen, elastic, and reticular fibers filled with a large amount of ground substance and scattered fibroblasts, they are looking at:",options:{A:"Dense regular connective tissue",B:"Adipose tissue",C:"Areolar connective tissue",D:"Compact bone"},answer:"C"},
+{id:180,topic:"Connective Tissue",q:"The defining histological feature of dense REGULAR connective tissue is:",options:{A:"Fibers running in many different, random directions",B:"Cells tightly packed together with no extracellular matrix",C:"Parallel, tightly packed bundles of collagen fibers running in the same direction",D:"A liquid ground substance"},answer:"C"},
+{id:181,topic:"Connective Tissue",q:"The defining histological feature of dense IRREGULAR connective tissue is:",options:{A:"Parallel, tightly packed bundles of collagen fibers",B:"Thick bundles of collagen fibers interwoven in a random, multi-directional pattern",C:"A completely avascular matrix",D:"Cells with multiple nuclei"},answer:"B"},
+{id:182,topic:"Cartilage & Bone",q:"Which specific tissue forms the smooth, glassy \"articular cartilage\" that covers the ends of long bones to reduce friction in joints?",options:{A:"Fibrocartilage",B:"Elastic cartilage",C:"Hyaline cartilage",D:"Dense regular tissue"},answer:"C"},
+{id:183,topic:"Cartilage & Bone",q:"Which specific tissue forms the highly flexible structure of the external ear?",options:{A:"Hyaline cartilage",B:"Elastic cartilage",C:"Fibrocartilage",D:"Areolar tissue"},answer:"B"},
+{id:184,topic:"Cartilage & Bone",q:"Which extremely strong tissue forms the menisci of the knee and the intervertebral discs of the spine, allowing it to absorb heavy compressive shock?",options:{A:"Hyaline cartilage",B:"Dense regular tissue",C:"Elastic cartilage",D:"Fibrocartilage"},answer:"D"},
+{id:185,topic:"Cartilage & Bone",q:"In bone tissue (osseous tissue), the cells responsible for *building* new bone matrix are called ________, while the cells responsible for *breaking down* old bone matrix are called ________.",options:{A:"Osteocytes; Osteoblasts",B:"Osteoclasts; Osteoblasts",C:"Osteoblasts; Osteoclasts",D:"Chondroblasts; Chondrocytes"},answer:"C"},
+{id:186,topic:"Muscle & Nervous",q:"Which type of muscle tissue is attached to the skeleton and is uniquely described as being \"voluntary\"?",options:{A:"Skeletal muscle",B:"Cardiac muscle",C:"Smooth muscle",D:"Visceral muscle"},answer:"A"},
+{id:187,topic:"Muscle & Nervous",q:"Which type of muscle tissue is uniquely identified by the presence of intercalated discs?",options:{A:"Smooth muscle",B:"Skeletal muscle",C:"Cardiac muscle",D:"Areolar muscle"},answer:"C"},
+{id:188,topic:"Muscle & Nervous",q:"Which type of muscle tissue lacks visible striations entirely?",options:{A:"Skeletal muscle",B:"Cardiac muscle",C:"Smooth muscle",D:"None of the above"},answer:"C"},
+{id:189,topic:"Muscle & Nervous",q:"In nervous tissue, neurons are the primary signaling cells. What is the primary role of the numerous glial cells (neuroglia) that surround them?",options:{A:"To act as the body's primary energy storage",B:"To actively contract and move the nerves",C:"To support, nourish, protect, and insulate the neurons",D:"To synthesize bone matrix"},answer:"C"},
+{id:190,topic:"Tissue Membranes",q:"The cutaneous membrane is biologically unique among all tissue membranes because:",options:{A:"It is the only one made entirely of connective tissue.",B:"It is a dry membrane directly exposed to the external air.",C:"It secretes massive amounts of synovial fluid.",D:"It lacks an epithelial layer."},answer:"B"},
+{id:191,topic:"Tissue Membranes",q:"The serous membranes are composed of simple squamous epithelium resting on a thin layer of areolar tissue. Their primary function is to:",options:{A:"Produce sweat for thermoregulation",B:"Absorb nutrients from digested food",C:"Produce a watery lubricating fluid to reduce friction between moving internal organs",D:"Provide structural support for the spine"},answer:"C"},
+{id:192,topic:"Tissue Membranes",q:"Which type of tissue membrane lines all body cavities that open directly to the outside world (like the nasal cavity, mouth, and lungs)?",options:{A:"Synovial membrane",B:"Mucous membrane",C:"Serous membrane",D:"Cutaneous membrane"},answer:"B"},
+{id:193,topic:"Tissue Membranes",q:"Which type of membrane is composed strictly of connective tissue (no epithelium) and is found lining freely movable joint capsules?",options:{A:"Serous membrane",B:"Synovial membrane",C:"Cutaneous membrane",D:"Mucous membrane"},answer:"B"},
+{id:194,topic:"Wound Healing",q:"During the \"Inflammation\" phase of tissue repair, local blood vessels dilate and become highly permeable. Why is this physiological response necessary?",options:{A:"To prevent white blood cells from entering the area",B:"To immediately form a permanent scar",C:"To allow white blood cells, fluid, and clotting proteins to seep into the injured area",D:"To starve the injured cells of oxygen"},answer:"C"},
+{id:195,topic:"Wound Healing",q:"During the \"Proliferation/Organization\" phase of tissue repair, a temporary, delicate pink tissue forms to restore the blood supply to the wound bed. This is known as:",options:{A:"Granulation tissue",B:"A keloid",C:"A scab",D:"Necrotic tissue"},answer:"A"},
+{id:196,topic:"Wound Healing",q:"When an injured tissue undergoes \"Regeneration,\" it replaces the destroyed tissue with the exact same kind of tissue. When it undergoes \"Fibrosis,\" it replaces the destroyed tissue with:",options:{A:"Adipose tissue",B:"Hyaline cartilage",C:"Dense connective (scar) tissue",D:"Nervous tissue"},answer:"C"},
+{id:197,topic:"Homeostasis & Cell Cycle",q:"Epithelial cells must rapidly divide to constantly replace lost surface cells. During which phase of the cell cycle do these cells physically replicate their DNA in preparation for mitosis?",options:{A:"G1 Phase",B:"S Phase (Synthesis)",C:"G2 Phase",D:"M Phase"},answer:"B"},
+{id:198,topic:"Skin Cells & Pigmentation",q:"The epidermis is composed predominantly (about 90%) of which cell type?",options:{A:"Keratinocytes",B:"Melanocytes",C:"Fibroblasts",D:"Macrophages"},answer:"A"},
+{id:199,topic:"Skin Cells & Pigmentation",q:"Which specialized cell in the epidermis is responsible for producing the pigment that protects the nuclei of underlying cells from UV radiation damage?",options:{A:"Keratinocyte",B:"Merkel cell",C:"Melanocyte",D:"Langerhans cell"},answer:"C"},
+{id:200,topic:"Skin Structure",q:"The dermis is divided into two distinct layers. The thin, superficial ________ layer is made of areolar tissue, while the deep, thick ________ layer is made of dense irregular connective tissue.",options:{A:"Reticular; Papillary",B:"Papillary; Reticular",C:"Basale; Corneum",D:"Epidermal; Subcutaneous"},answer:"B"},
 ];
 
 /* ============================================================
