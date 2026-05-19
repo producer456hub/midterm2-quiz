@@ -65,7 +65,8 @@ JOBS = [
 ]
 
 OUT_DIR = r"C:\Users\produ\midterm2-quiz\images"
-SCALE = 2.0  # ~144 DPI render scale
+SCALE = 3.5  # ~252 DPI — sharper than original 2.0 (~144 DPI)
+JPG_QUALITY = 90
 
 docs = {tag: fitz.open(p) for tag, p in PDFS.items()}
 mat = fitz.Matrix(SCALE, SCALE)
@@ -75,7 +76,7 @@ for qid, tag, page_no in JOBS:
     pix = page.get_pixmap(matrix=mat, alpha=False)
     out = os.path.join(OUT_DIR, f"q{qid:02d}.jpg")
     with open(out, "wb") as f:
-        f.write(pix.tobytes("jpeg", jpg_quality=82))
+        f.write(pix.tobytes("jpeg", jpg_quality=JPG_QUALITY))
     sz = os.path.getsize(out) // 1024
     print(f"q{qid:02d} <- {tag} p{page_no:02d}  ({sz} KB)")
 
