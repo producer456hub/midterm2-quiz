@@ -1,10 +1,11 @@
 # Midterm 2 Practice Quiz
 
-Interactive 200-question multiple-choice quiz covering Dr. Mollhoff's Week 4–6 lecture content: embryology, tissue types, histology, cell junctions, glands, membranes, the integumentary system, wound healing, homeostasis, and the cell cycle.
+Interactive 225-question multiple-choice quiz covering Dr. Mollhoff's Week 4–6 lecture content: embryology, tissue types, histology, cell junctions, glands, membranes, the integumentary system, wound healing, homeostasis, and the cell cycle. Includes a separate 25-question slide-ID quiz using histologyguide.com slides.
 
 ## Features
 
-- **200 MCQs** tagged across 14 topic categories
+- **225 MCQs** in the main bank, plus **25 histology slide-ID questions** in a separate slide quiz mode
+- Both modes share the same live category meters, retake-missed loop, and end-of-round weak-areas report
 - **Live category meters** on the side panel as you take the quiz:
   - Colored fill = correct answers (out of total in that category)
   - Gray "ghost" fill behind = questions seen (correct + wrong)

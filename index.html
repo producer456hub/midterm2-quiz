@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <meta name="color-scheme" content="dark" />
 <meta name="theme-color" content="#0b1220" />
-<title>Midterm 2 Quiz — 200 Questions (Mollhoff Weeks 4–6)</title>
+<title>Midterm 2 Quiz — 225 Questions + 25 Slide-ID (Mollhoff Weeks 4–6)</title>
 <style>
   :root {
     color-scheme: dark;
@@ -88,6 +88,37 @@
 
   .question-num { font-size: 12px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; }
   .question-text { font-size: 16px; font-weight: 600; margin: 6px 0 16px 0; }
+
+  .slide-frame {
+    margin: 0 0 14px 0;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+    background: #000;
+  }
+  .slide-frame img {
+    display: block;
+    width: 100%;
+    max-height: 360px;
+    object-fit: contain;
+    background: #000;
+  }
+  .slide-frame .slide-fallback {
+    padding: 22px;
+    color: var(--muted);
+    font-size: 13px;
+    text-align: center;
+    background: var(--surface);
+  }
+  .slide-link {
+    display: inline-block;
+    margin: 0 0 14px 0;
+    font-size: 12px;
+    color: var(--accent);
+    text-decoration: none;
+    word-break: break-all;
+  }
+  .slide-link:hover { text-decoration: underline; }
   .topic-tag {
     display: inline-block; font-size: 11px; font-weight: 600;
     background: var(--accent-soft); color: var(--accent);
@@ -244,26 +275,33 @@
 <div class="app">
   <header>
     <h1>Midterm 2 Practice Quiz</h1>
-    <div class="subtitle">200 questions · Dr. Mollhoff Weeks 4–6 · Tissues · Histology · Integumentary System</div>
+    <div class="subtitle">225 MCQs + 25 slide-ID · Dr. Mollhoff Weeks 4–6 · Tissues · Histology · Integumentary System</div>
   </header>
 
   <!-- Setup screen -->
   <div id="setup" class="card">
     <h2 style="margin-top:0;">Start Quiz</h2>
     <p style="color: var(--muted); font-size: 14px;">
-      200 multiple-choice questions. Live category meters track your accuracy
+      225 multiple-choice questions (plus an optional 25-question slide-ID quiz). Live category meters track your accuracy
       (colored fill) and coverage (gray ghost fill) as you go. After the quiz
       you can retake just the questions you missed and keep looping until you score 100%.
     </p>
     <div class="setup-options">
-      <label><input type="radio" name="order" value="sequential" checked /> Sequential order (1 → 200)</label>
+      <label><input type="radio" name="order" value="sequential" checked /> Sequential order</label>
       <label><input type="radio" name="order" value="shuffle" /> Shuffle questions</label>
     </div>
     <div class="setup-options">
       <label><input type="checkbox" id="showTopics" checked /> Show topic tag on each question</label>
       <label><input type="checkbox" id="instantFeedback" checked /> Reveal correct answer after each question</label>
     </div>
-    <button id="startBtn">Start Quiz</button>
+    <div style="display:flex; gap:10px; flex-wrap:wrap;">
+      <button id="startBtn">Start Quiz (225 MCQs)</button>
+      <button id="startSlideBtn" class="secondary">Start Slide-ID Quiz (25 Histology Slides)</button>
+    </div>
+    <p style="color: var(--muted); font-size: 12px; margin-top: 12px;">
+      The Slide-ID Quiz shows histology slide images (or links to histologyguide.com)
+      and asks you to identify the tissue. Same live category meters and retake-missed loop.
+    </p>
   </div>
 
   <!-- Quiz layout: main + side meters -->
@@ -271,12 +309,13 @@
     <div>
       <div class="card">
         <div class="topbar">
-          <div class="meta"><strong id="qIndex">1</strong> of <strong id="qTotal">200</strong></div>
+          <div class="meta"><strong id="qIndex">1</strong> of <strong id="qTotal">225</strong></div>
           <div class="meta">Correct: <strong id="qCorrect">0</strong> · Missed: <strong id="qWrong">0</strong></div>
         </div>
         <div class="progress"><div class="progress-fill" id="progFill"></div></div>
 
         <div class="question-num">Question <span id="qNumDisplay">1</span><span id="topicTag" class="topic-tag"></span></div>
+        <div id="slideHost"></div>
         <div class="question-text" id="qText"></div>
         <div class="options" id="qOptions"></div>
         <div id="feedback"></div>
@@ -310,7 +349,7 @@
 
     <div class="actions" style="justify-content:center; margin-top: 20px;">
       <button id="retakeMissedBtn">Retake Missed Questions</button>
-      <button id="restartAllBtn" class="secondary">Restart All 200</button>
+      <button id="restartAllBtn" class="secondary">Back to Start</button>
     </div>
 
     <div class="review-section">
@@ -322,7 +361,7 @@
 
 <script>
 /* ============================================================
-   QUESTION BANK (200 Q)
+   QUESTION BANK (225 Q in main, 25 Q in slide-ID)
    Each: { id, topic, q, options:{A,B,C,D}, answer }
    NOTE: Q123 and Q124 use anatomically correct answers
          (the supplied key had errors — see commit history).
@@ -528,6 +567,64 @@ const QUESTIONS = [
 {id:198,topic:"Skin Cells & Pigmentation",q:"The epidermis is composed predominantly (about 90%) of which cell type?",options:{A:"Keratinocytes",B:"Melanocytes",C:"Fibroblasts",D:"Macrophages"},answer:"A"},
 {id:199,topic:"Skin Cells & Pigmentation",q:"Which specialized cell in the epidermis is responsible for producing the pigment that protects the nuclei of underlying cells from UV radiation damage?",options:{A:"Keratinocyte",B:"Merkel cell",C:"Melanocyte",D:"Langerhans cell"},answer:"C"},
 {id:200,topic:"Skin Structure",q:"The dermis is divided into two distinct layers. The thin, superficial ________ layer is made of areolar tissue, while the deep, thick ________ layer is made of dense irregular connective tissue.",options:{A:"Reticular; Papillary",B:"Papillary; Reticular",C:"Basale; Corneum",D:"Epidermal; Subcutaneous"},answer:"B"},
+{id:226,topic:"Skin Structure",q:"In her Week 6 PollEv questions, Dr. Mollhoff asked about dandruff. Based on the layers of the skin, what exactly is dandruff and which specific layer does it flake off from?",options:{A:"Dead cells shedding from the stratum corneum",B:"Dried sebum shedding from the stratum granulosum",C:"Living stem cells shedding from the stratum basale",D:"Dried sweat from the papillary layer"},answer:"A"},
+{id:227,topic:"Skin Structure",q:"You get a pesky paper cut that bleeds a little bit. Because it bleeds, you know that the cut must have penetrated through the epidermis and reached at least the superficial dermis. How do you know this?",options:{A:"The epidermis is completely avascular (lacks blood vessels), so bleeding only occurs if the vascularized dermis is pierced.",B:"The epidermis does not contain any cells.",C:"The basement membrane is highly pressurized with blood.",D:"Paper cuts only trigger bleeding when they reach the hypodermis."},answer:"A"},
+{id:228,topic:"Skin Cells & Pigmentation",q:"Melanosomes are packaged inside melanocytes and must be moved *out* of the cell to be distributed. Which specific cellular transport mechanism moves melanosomes out of the melanocyte?",options:{A:"Osmosis",B:"Exocytosis",C:"Simple diffusion",D:"Facilitated diffusion"},answer:"B"},
+{id:229,topic:"Skin Cells & Pigmentation",q:"After melanosomes leave the melanocyte, they must be taken *into* the neighboring keratinocytes to protect the DNA. Which cellular transport mechanism do the keratinocytes use to bring the melanosomes inside?",options:{A:"Exocytosis",B:"Endocytosis (Phagocytosis)",C:"Active pumping via sodium-potassium pumps",D:"Filtration"},answer:"B"},
+{id:230,topic:"Skin Cells & Pigmentation",q:"When viewing a histology slide of the epidermis, you notice dark brown speckles concentrated in the deepest layer. What are these speckles, and what layer are they in?",options:{A:"Keratin granules in the stratum corneum",B:"Red blood cells in the stratum spinosum",C:"Melanin/melanosomes in the stratum basale",D:"Adipose droplets in the stratum lucidum"},answer:"C"},
+{id:231,topic:"Burns & Disorders",q:"The \"ABCDE\" rule is used to identify warning signs of melanoma. What does the \"A\" stand for?",options:{A:"Avascular (lacking a blood supply)",B:"Asymmetry (the two halves of the spot do not match)",C:"Apoptosis (cell death)",D:"Atrophy (shrinking in size)"},answer:"B"},
+{id:232,topic:"Burns & Disorders",q:"In the ABCDE rule for melanoma, what does the \"B\" stand for?",options:{A:"Bleeding (the mole bleeds easily)",B:"Basal (originating in the stratum basale)",C:"Border irregularity (the edges are ragged, notched, or blurred)",D:"Blistering (forming a fluid-filled sac)"},answer:"C"},
+{id:233,topic:"Burns & Disorders",q:"In the ABCDE rule for melanoma, what does the \"C\" stand for?",options:{A:"Color (the color is not uniform and may have shades of brown, black, red, or blue)",B:"Cancerous (confirmed by biopsy)",C:"Circular (perfectly round shape)",D:"Callus (hardened over)"},answer:"A"},
+{id:234,topic:"Burns & Disorders",q:"In the ABCDE rule for melanoma, the \"D\" warns you to look out for a Diameter that is larger than:",options:{A:"1 millimeter (the size of a pinhead)",B:"6 millimeters (about the size of a pencil eraser)",C:"2 centimeters (the size of a coin)",D:"1 inch"},answer:"B"},
+{id:235,topic:"Burns & Disorders",q:"In the ABCDE rule for melanoma, what does the \"E\" stand for?",options:{A:"Erythematous (appearing bright red)",B:"Evolving (the spot is changing in size, shape, or color over time)",C:"Epidermal (staying strictly on the surface)",D:"Encapsulated (surrounded by a membrane)"},answer:"B"},
+{id:236,topic:"Burns & Disorders",q:"Severe third-degree burns often require skin grafts because the local tissue cannot regenerate. Which type of skin graft involves taking healthy epidermis and dermis from an unburned part of the patient's *own* body?",options:{A:"Allograft",B:"Xenograft",C:"Autograft",D:"Synthetic graft"},answer:"C"},
+{id:237,topic:"Burns & Disorders",q:"If a burn patient does not have enough healthy skin for an autograft, doctors may use an *allograft*. Where does an allograft come from?",options:{A:"The patient's own body",B:"Another human being (such as a cadaver donor)",C:"An animal (such as a pig)",D:"It is grown entirely from synthetic plastics"},answer:"B"},
+{id:238,topic:"Burns & Disorders",q:"In burn treatments, what is a *xenograft*?",options:{A:"A tissue graft taken from the patient's identical twin",B:"A tissue graft taken from a different species (e.g., porcine/pig skin)",C:"A graft made of pure collagen fibers",D:"A graft consisting only of the stratum corneum"},answer:"B"},
+{id:239,topic:"Burns & Disorders",q:"Clinically, why is an autograft considered the most successful and \"best\" type of skin graft for a severe burn?",options:{A:"It is less expensive to harvest.",B:"It completely prevents the formation of any scar tissue.",C:"Because the tissue is from the patient's own body, there is no risk of the immune system rejecting it.",D:"It allows the skin to immediately begin sweating again."},answer:"C"},
+{id:240,topic:"Skin Structure",q:"When you wear shoes that rub against your heels, the constant mechanical friction stimulates increased cell division in the stratum basale. This results in a thickened area of skin known as a:",options:{A:"Keloid",B:"Callus",C:"Melanoma",D:"Blister"},answer:"B"},
+{id:241,topic:"Skin Structure",q:"\"Thick skin\" is found on the palms of the hands and the soles of the feet. In addition to having an extra epidermal layer (the stratum lucidum), thick skin is notably missing which two accessory structures?",options:{A:"Sweat glands and sensory receptors",B:"Hair follicles and sebaceous (oil) glands",C:"Dermal papillae and keratinocytes",D:"Meissner's corpuscles and Pacinian corpuscles"},answer:"B"},
+{id:242,topic:"Burns & Disorders",q:"A biopsy of a tumor reveals that it originated from the actively dividing stem cells of the epidermis. Which specific type of skin cancer is this?",options:{A:"Squamous cell carcinoma",B:"Melanoma",C:"Basal cell carcinoma",D:"Kaposi sarcoma"},answer:"C"},
+{id:243,topic:"Skin Structure",q:"When examining a histology slide of the skin, how can you easily identify the hypodermis, even if the slide is oriented upside down or sideways?",options:{A:"It is the only layer containing hair follicles.",B:"It will feature large, empty-looking white rings that represent clusters of adipose (fat) tissue.",C:"It will be perfectly smooth with no blood vessels.",D:"It will have a dark, wavy line of melanin."},answer:"B"},
+{id:244,topic:"Skin Structure",q:"The nails on your fingers and toes are modifications of the epidermis. The main, visible body of the nail is comprised of densely packed, dead keratinocytes. Which epidermal layer does this correspond to?",options:{A:"Stratum basale",B:"Stratum spinosum",C:"Stratum corneum",D:"Stratum granulosum"},answer:"C"},
+{id:245,topic:"Skin Structure",q:"Why does the lunula (the white crescent at the base of the nail) appear white and opaque compared to the rest of the pink nail bed?",options:{A:"It lacks keratin.",B:"A thick layer of actively dividing cells (the nail matrix) obscures the pink blood vessels underneath it.",C:"It is heavily calcified like bone.",D:"It is an area where melanocytes produce white pigment."},answer:"B"},
+{id:246,topic:"Skin Glands & Vitamin D",q:"In the evolutionary context of skin color discussed in the objectives, human skin pigmentation requires a delicate physiological balance. Melanin is needed to protect cellular DNA from UV damage, but the skin must still absorb *enough* UV radiation to successfully synthesize:",options:{A:"Folic acid",B:"Vitamin C",C:"Calcium",D:"Vitamin D"},answer:"D"},
+{id:247,topic:"Skin Structure",q:"The reticular layer of the dermis is highly capable of stretching and recoiling due to the presence of which specific connective tissue fibers?",options:{A:"Reticular fibers",B:"Collagen and Elastic fibers",C:"Keratin fibers",D:"Actin and Myosin fibers"},answer:"B"},
+{id:248,topic:"Wound Healing",q:"A patient presents with a deep laceration that heals with a noticeable scar. The patient notices that the scarred area no longer sweats and hair does not grow there. Why?",options:{A:"Scars are completely avascular, preventing sweat from forming.",B:"During fibrosis, the dermis is repaired with dense collagen scar tissue, but the specialized epithelial accessory structures (like sweat glands and hair follicles) do not regenerate.",C:"The immune system permanently attacks hair follicles near scar tissue.",D:"The scar tissue blocks the pores, trapping the hair and sweat underneath."},answer:"B"},
+{id:249,topic:"Homeostasis & Cell Cycle",q:"When the body's core temperature rises, blood vessels in the dermis undergo ________ to allow heat to radiate out of the body.",options:{A:"Vasoconstriction",B:"Vasodilation",C:"Apoptosis",D:"Coagulation"},answer:"B"},
+{id:250,topic:"Tissue Basics",q:"According to Dr. Mollhoff's lecture slides, \"tissues\" are defined as a community of similar cells and their surrounding ________ that work together to perform a specific function.",options:{A:"Organelles",B:"Extracellular matrix / materials",C:"Epithelium",D:"Gap junctions"},answer:"B"},
+];
+
+/* ============================================================
+   SLIDE-ID QUESTION BANK (25 Q)
+   Each entry has a slideUrl (clickable link to histologyguide.com)
+   and a slideImg (derived thumbnail path — img hides on 404).
+   ============================================================ */
+const SLIDE_QUESTIONS = [
+{id:1,topic:"Epithelial Tissue",slideUrl:"https://histologyguide.com/slideview/MH-134-kidney/16-slide-1.html",slideImg:"https://histologyguide.com/slideview/MH-134-kidney/imgs/slide.png",q:"When exploring the tubules of the kidney, you will observe a single layer of box-like cells with large, round, centrally located nuclei. What type of epithelial tissue is this?",options:{A:"Simple squamous epithelium",B:"Stratified cuboidal epithelium",C:"Simple cuboidal epithelium",D:"Transitional epithelium"},answer:"C"},
+{id:2,topic:"Epithelial Tissue",slideUrl:"https://histologyguide.com/slideview/MH-113-small-intestine/14-slide-1.html",slideImg:"https://histologyguide.com/slideview/MH-113-small-intestine/imgs/slide.png",q:"Zooming in on the lining of the digestive tract reveals tall, rectangular cells with oval nuclei near the basal surface. Dispersed among them are mucus-secreting goblet cells. What is this tissue?",options:{A:"Pseudostratified columnar epithelium",B:"Simple columnar epithelium",C:"Stratified squamous epithelium",D:"Simple cuboidal epithelium"},answer:"B"},
+{id:3,topic:"Epithelial Tissue",slideUrl:"https://histologyguide.com/slideview/MH-123-trachea/15-slide-1.html",slideImg:"https://histologyguide.com/slideview/MH-123-trachea/imgs/slide.png",q:"Viewing the respiratory tract lining, the cells appear to be in multiple layers because the nuclei are at different heights, but every cell actually touches the basement membrane. Hair-like structures are visible on the apical surface. What is this tissue?",options:{A:"Pseudostratified ciliated columnar epithelium",B:"Stratified columnar epithelium",C:"Simple squamous epithelium",D:"Transitional epithelium"},answer:"A"},
+{id:4,topic:"Epithelial Tissue",slideUrl:"https://histologyguide.com/slideview/MH-105-esophagus/14-slide-1.html",slideImg:"https://histologyguide.com/slideview/MH-105-esophagus/imgs/slide.png",q:"This slide shows the lining of the esophagus. It features many stacked layers of cells, with the outermost apical cells being flat and scale-like. The outer cells retain their nuclei (they are not dead). What tissue is this?",options:{A:"Keratinized stratified squamous epithelium",B:"Non-keratinized stratified squamous epithelium",C:"Stratified cuboidal epithelium",D:"Transitional epithelium"},answer:"B"},
+{id:5,topic:"Epithelial Tissue",slideUrl:"https://histologyguide.com/slideview/MH-090-thick-skin/11-slide-1.html",slideImg:"https://histologyguide.com/slideview/MH-090-thick-skin/imgs/slide.png",q:"Looking at the epidermis of the palms and soles, the outermost layers consist of dead, flat cells completely filled with a tough protein to prevent water loss. What specific tissue classification is this?",options:{A:"Non-keratinized stratified squamous epithelium",B:"Simple squamous epithelium",C:"Keratinized stratified squamous epithelium",D:"Pseudostratified columnar epithelium"},answer:"C"},
+{id:6,topic:"Epithelial Tissue",slideUrl:"https://histologyguide.com/slideview/MH-140-urinary-bladder/16-slide-1.html",slideImg:"https://histologyguide.com/slideview/MH-140-urinary-bladder/imgs/slide.png",q:"The lining of the urinary bladder is uniquely adapted to stretch. The apical cells appear rounded and dome-shaped when the bladder is empty, but flatten out when distended. What tissue is this?",options:{A:"Stratified cuboidal epithelium",B:"Simple columnar epithelium",C:"Transitional epithelium",D:"Stratified squamous epithelium"},answer:"C"},
+{id:7,topic:"Epithelial Tissue",slideUrl:"https://histologyguide.com/slideview/MHS-231-eyelid/02-slide-1.html?x=8644&y=12881&z=92.724",slideImg:"https://histologyguide.com/slideview/MHS-231-eyelid/imgs/slide.png",q:"This coordinate from Dr. Mollhoff's lecture points to a blood vessel. The ultra-thin, single layer of flattened cells lining the inside of this blood vessel is specifically referred to as the:",options:{A:"Mesothelium",B:"Endothelium",C:"Epidermis",D:"Lamina propria"},answer:"B"},
+{id:8,topic:"Connective Tissue",slideUrl:"https://histologyguide.com/slideview/MH-022-adipose/03-slide-1.html",slideImg:"https://histologyguide.com/slideview/MH-022-adipose/imgs/slide.png",q:"This loose connective tissue acts as an energy reservoir, insulator, and cushion. Under the microscope, the cells look like large, empty, white rings because the central lipid droplet pushes the nucleus to the very edge. What is this tissue?",options:{A:"Areolar tissue",B:"Reticular tissue",C:"Adipose tissue",D:"Hyaline cartilage"},answer:"C"},
+{id:9,topic:"Connective Tissue",slideUrl:"https://histologyguide.com/slideview/MH-024-tendon/03-slide-1.html",slideImg:"https://histologyguide.com/slideview/MH-024-tendon/imgs/slide.png",q:"This slide of a tendon features tightly packed, parallel bundles of collagen fibers with very little ground substance, allowing it to resist strong pulling forces in one direction. What is this tissue?",options:{A:"Dense irregular connective tissue",B:"Dense regular connective tissue",C:"Elastic connective tissue",D:"Fibrocartilage"},answer:"B"},
+{id:10,topic:"Connective Tissue",slideUrl:"https://histologyguide.com/slideview/MH-091-thin-skin/11-slide-1.html",slideImg:"https://histologyguide.com/slideview/MH-091-thin-skin/imgs/slide.png",q:"When exploring the deeper reticular layer of the dermis, you see thick bundles of collagen fibers running in random, interwoven directions. This allows the skin to resist tension from multiple angles. What tissue is this?",options:{A:"Areolar connective tissue",B:"Dense regular connective tissue",C:"Dense irregular connective tissue",D:"Reticular connective tissue"},answer:"C"},
+{id:11,topic:"Cartilage & Bone",slideUrl:"https://histologyguide.com/slideview/MH-030-hyaline-cartilage/05-slide-1.html",slideImg:"https://histologyguide.com/slideview/MH-030-hyaline-cartilage/imgs/slide.png",q:"This supportive connective tissue has a smooth, glassy, clear extracellular matrix. The mature cells (chondrocytes) are trapped in small isolated gel-like spaces called lacunae. What tissue is this?",options:{A:"Fibrocartilage",B:"Elastic cartilage",C:"Hyaline cartilage",D:"Compact bone"},answer:"C"},
+{id:12,topic:"Cartilage & Bone",slideUrl:"https://histologyguide.com/slideview/MH-031-elastic-cartilage/05-slide-1.html",slideImg:"https://histologyguide.com/slideview/MH-031-elastic-cartilage/imgs/slide.png",q:"Found in the external ear and epiglottis, this cartilage contains chondrocytes in lacunae, but the matrix is densely packed with dark-staining fibers that allow the tissue to bend and snap back into shape. What tissue is this?",options:{A:"Reticular tissue",B:"Fibrocartilage",C:"Hyaline cartilage",D:"Elastic cartilage"},answer:"D"},
+{id:13,topic:"Cartilage & Bone",slideUrl:"https://histologyguide.com/slideview/MH-032-fibrocartilage/05-slide-1.html",slideImg:"https://histologyguide.com/slideview/MH-032-fibrocartilage/imgs/slide.png",q:"This extremely tough cartilage is found in the intervertebral discs and knee menisci. Its matrix is packed with thick, visible wavy layers of collagen fibers to absorb heavy compressive shock. What tissue is this?",options:{A:"Fibrocartilage",B:"Hyaline cartilage",C:"Dense regular connective tissue",D:"Compact bone"},answer:"A"},
+{id:14,topic:"Cartilage & Bone",slideUrl:"https://histologyguide.com/slideview/MH-040-compact-bone/05-slide-1.html",slideImg:"https://histologyguide.com/slideview/MH-040-compact-bone/imgs/slide.png",q:"This slide shows a rigid matrix organized into target-like concentric rings (lamellae) around a central canal. What is the proper term for one of these entire cylindrical column structures?",options:{A:"Lacuna",B:"Osteon",C:"Trabecula",D:"Canaliculus"},answer:"B"},
+{id:15,topic:"Cartilage & Bone",slideUrl:"https://histologyguide.com/slideview/MH-044-spongy-bone/05-slide-1.html",slideImg:"https://histologyguide.com/slideview/MH-044-spongy-bone/imgs/slide.png",q:"Unlike the dense bone on the exterior, this bone tissue forms a lighter, lattice-like network of bony spikes called trabeculae. The light \"bubbly\" areas in the open spaces between the spikes are normally filled with:",options:{A:"Synovial fluid",B:"Red bone marrow (containing clusters of adipocytes and blood cells)",C:"Pure collagen",D:"Hyaluronan"},answer:"B"},
+{id:16,topic:"Connective Tissue",slideUrl:"https://histologyguide.com/slideview/MH-015-blood-smear/06-slide-1.html",slideImg:"https://histologyguide.com/slideview/MH-015-blood-smear/imgs/slide.png",q:"In this smear of fluid connective tissue, the extracellular matrix is a liquid plasma. The numerous small, anucleated pink cells are erythrocytes, while the larger purple-stained cells with nuclei are:",options:{A:"Fibroblasts",B:"Chondrocytes",C:"Leukocytes (White blood cells)",D:"Platelets"},answer:"C"},
+{id:17,topic:"Muscle & Nervous",slideUrl:"https://histologyguide.com/slideview/MH-051-skeletal-muscle/04-slide-1.html",slideImg:"https://histologyguide.com/slideview/MH-051-skeletal-muscle/imgs/slide.png",q:"Under a microscope, these cells appear as long, cylindrical fibers with visible light and dark bands (striations). Notably, each cell has multiple nuclei pushed to the periphery. What tissue is this?",options:{A:"Smooth muscle",B:"Cardiac muscle",C:"Skeletal muscle",D:"Dense regular connective tissue"},answer:"C"},
+{id:18,topic:"Muscle & Nervous",slideUrl:"https://histologyguide.com/slideview/MH-054-cardiac-muscle/04-slide-1.html",slideImg:"https://histologyguide.com/slideview/MH-054-cardiac-muscle/imgs/slide.png",q:"These cells are striated but are shorter, branched, and typically have only a single central nucleus. What specific specialized cell junctions connect these cells end-to-end to allow rapid electrical communication?",options:{A:"Basement membranes",B:"Intercalated discs",C:"Tight junctions",D:"Synovial membranes"},answer:"B"},
+{id:19,topic:"Muscle & Nervous",slideUrl:"https://histologyguide.com/slideview/MH-056-smooth-muscle/04-slide-1.html",slideImg:"https://histologyguide.com/slideview/MH-056-smooth-muscle/imgs/slide.png",q:"Found in the walls of the intestines and blood vessels, these cells are short, spindle-shaped (fusiform), have a single central nucleus, and completely lack visible striations. What tissue is this?",options:{A:"Smooth muscle",B:"Cardiac muscle",C:"Skeletal muscle",D:"Dense irregular connective tissue"},answer:"A"},
+{id:20,topic:"Muscle & Nervous",slideUrl:"https://histologyguide.com/slideview/MH-081-spinal-cord/07-slide-1.html",slideImg:"https://histologyguide.com/slideview/MH-081-spinal-cord/imgs/slide.png",q:"When examining nervous tissue, the highly specialized, star-shaped cells (neurosoma with branching dendrites) responsible for actively sending and receiving electrical action potentials are the:",options:{A:"Neuroglia",B:"Neurons",C:"Fibroblasts",D:"Schwann cells"},answer:"B"},
+{id:21,topic:"Skin Structures",slideUrl:"https://histologyguide.com/slideview/MH-092-scalp/11-slide-1.html",slideImg:"https://histologyguide.com/slideview/MH-092-scalp/imgs/slide.png",q:"Looking at a hair follicle in the scalp, you notice a lobed gland attached to the upper portion of the follicle. This gland secretes an oily substance (sebum) by having its entire cells rupture. What type of gland is this?",options:{A:"Eccrine sweat gland",B:"Apocrine sweat gland",C:"Sebaceous gland",D:"Endocrine gland"},answer:"C"},
+{id:22,topic:"Skin Structures",slideUrl:"https://histologyguide.com/slideview/MH-090-thick-skin/11-slide-1.html",slideImg:"https://histologyguide.com/slideview/MH-090-thick-skin/imgs/slide.png",q:"Deep in the dermis of thick skin, you find coiled tubular glands that secrete a watery fluid directly to the surface of the skin to cool the body. What are these specific glands?",options:{A:"Sebaceous glands",B:"Eccrine sweat glands",C:"Apocrine sweat glands",D:"Ceruminous glands"},answer:"B"},
+{id:23,topic:"Skin Structures",slideUrl:"https://histologyguide.com/slideview/MH-091-thin-skin/11-slide-1.html",slideImg:"https://histologyguide.com/slideview/MH-091-thin-skin/imgs/slide.png",q:"Attached to the side of the hair follicle is a small band of smooth muscle. When contracted (in response to cold temperatures or sympathetic nervous system stimulation), it pulls the hair upright to create \"goosebumps.\" What is this structure called?",options:{A:"Papillary muscle",B:"Arrector pili muscle",C:"Reticular muscle",D:"Dermal papilla"},answer:"B"},
+{id:24,topic:"Skin Structures",slideUrl:"https://histologyguide.com/slideview/MH-091-thin-skin/11-slide-1.html",slideImg:"https://histologyguide.com/slideview/MH-091-thin-skin/imgs/slide.png",q:"When examining the deepest layer of the epidermis (the stratum basale), you find specialized cells that produce a dark pigment to protect the DNA of dividing cells from UV radiation. These cells are:",options:{A:"Keratinocytes",B:"Langerhans cells",C:"Merkel cells",D:"Melanocytes"},answer:"D"},
+{id:25,topic:"Tissue Identification",slideUrl:"https://histologyguide.com/slideview/MHS-227a-eye/02-slide-1.html?x=4130&y=35677&z=100.000",slideImg:"https://histologyguide.com/slideview/MHS-227a-eye/imgs/slide.png",q:"Based on this exact coordinate link presented in Dr. Mollhoff's lecture, what is the primary visual histological hallmark that confirms you are looking at an epithelial tissue rather than a connective tissue?",options:{A:"The cells are widely scattered in an abundant extracellular matrix.",B:"The cells are tightly packed together with minimal extracellular space, lining an empty space (lumen) or surface.",C:"The tissue is highly vascularized with many blood vessels visible between the cells.",D:"The cells possess visible intercalated discs."},answer:"B"},
 ];
 
 /* ============================================================
@@ -542,6 +639,8 @@ const state = {
   settings: { shuffle: false, showTopics: true, instantFeedback: true },
   topicStats: {}, // { topicName: { correct, seen, total } }
   currentTopic: null,
+  bank: QUESTIONS,       // active source bank (QUESTIONS or SLIDE_QUESTIONS)
+  bankName: "main",      // "main" or "slide" — used for labels
 };
 
 /* ============================================================
@@ -637,13 +736,15 @@ function renderMeters() {
 /* ============================================================
    START QUIZ
    ============================================================ */
-$("startBtn").addEventListener("click", () => {
+function beginQuiz(bank, bankName) {
   state.settings.shuffle         = document.querySelector('input[name="order"]:checked').value === "shuffle";
   state.settings.showTopics      = $("showTopics").checked;
   state.settings.instantFeedback = $("instantFeedback").checked;
 
+  state.bank = bank;
+  state.bankName = bankName;
   state.round = 1;
-  state.pool  = state.settings.shuffle ? shuffleArr(QUESTIONS) : QUESTIONS.slice();
+  state.pool  = state.settings.shuffle ? shuffleArr(bank) : bank.slice();
   state.idx = 0;
   state.answered = [];
   state.missedIds = [];
@@ -652,7 +753,10 @@ $("startBtn").addEventListener("click", () => {
   show("quiz");
   renderQuestion();
   renderMeters();
-});
+}
+
+$("startBtn").addEventListener("click", () => beginQuiz(QUESTIONS, "main"));
+$("startSlideBtn").addEventListener("click", () => beginQuiz(SLIDE_QUESTIONS, "slide"));
 
 /* ============================================================
    QUIZ NAVIGATION
@@ -674,6 +778,32 @@ function renderQuestion() {
   $("qText").textContent = q.q;
   $("feedback").innerHTML = "";
   $("nextBtn").style.display = "none";
+
+  // Slide preview (only present on SLIDE_QUESTIONS entries)
+  const slideHost = $("slideHost");
+  slideHost.innerHTML = "";
+  if (q.slideUrl) {
+    const frame = document.createElement("div");
+    frame.className = "slide-frame";
+    const img = document.createElement("img");
+    img.alt = "Histology slide preview";
+    img.loading = "lazy";
+    img.referrerPolicy = "no-referrer";
+    img.src = q.slideImg;
+    img.onerror = () => {
+      frame.innerHTML = `<div class="slide-fallback">Slide image unavailable inline — click the link below to open the interactive viewer on histologyguide.com.</div>`;
+    };
+    frame.appendChild(img);
+    slideHost.appendChild(frame);
+
+    const link = document.createElement("a");
+    link.className = "slide-link";
+    link.href = q.slideUrl;
+    link.target = "_blank";
+    link.rel = "noopener noreferrer";
+    link.textContent = "Open interactive slide → " + q.slideUrl;
+    slideHost.appendChild(link);
+  }
 
   const opts = $("qOptions");
   opts.innerHTML = "";
@@ -804,7 +934,7 @@ function finishRound() {
     reviewList.innerHTML = `<div style="color:var(--muted); font-size:13px;">No missed questions.</div>`;
   } else {
     state.missedIds.forEach(id => {
-      const q = QUESTIONS.find(x => x.id === id);
+      const q = state.bank.find(x => x.id === id);
       const ans = state.answered.find(a => a.id === id);
       const yourPick = ans && ans.picked
         ? `${ans.picked}) ${q.options[ans.picked]}`
@@ -835,7 +965,7 @@ function finishRound() {
 $("retakeMissedBtn").addEventListener("click", () => {
   if (state.missedIds.length === 0) return;
   const missedSet = new Set(state.missedIds);
-  state.pool = QUESTIONS.filter(q => missedSet.has(q.id));
+  state.pool = state.bank.filter(q => missedSet.has(q.id));
   if (state.settings.shuffle) state.pool = shuffleArr(state.pool);
   state.idx = 0;
   state.answered = [];
