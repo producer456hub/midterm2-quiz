@@ -27,6 +27,57 @@
     --warn-soft: #422a06;
     --border: #2a3446;
   }
+
+  /* ---- Memory-Retention (Light) Theme ----
+     Palette grounded in Mehta & Zhu 2009 (blue→approach/encoding,
+     red→detail/error-review), Dzulkifli & Mustafar 2013 (warm colors
+     aid encoding; cream beats pure white for accommodative strain),
+     Kuhbandner & Pekrun 2015 (red/yellow recall > blue/green). */
+  body.theme-retention {
+    --bg: #faf7f2;
+    --card: #ffffff;
+    --surface: #f0eae0;
+    --surface-hover: #e7dfd1;
+    --ink: #1f2933;
+    --muted: #5b6470;
+    --dim: #8a929c;
+    --accent: #2a6db0;
+    --accent-hover: #1f578f;
+    --accent-soft: #dce8f4;
+    --good: #1f6b40;
+    --good-soft: #d6efdd;
+    --bad: #b03a2e;
+    --bad-soft: #f7dad5;
+    --warn: #8b6914;
+    --warn-soft: #fff4c2;
+    --border: #d6cfc2;
+    color-scheme: light;
+  }
+  body.theme-retention .card { box-shadow: 0 1px 3px rgba(15,23,42,0.08); }
+  body.theme-retention button { background: #1f8a5c; color: #ffffff; }
+  body.theme-retention button:hover { background: #176f4a; color: #ffffff; }
+  body.theme-retention button.secondary { background: var(--surface-hover); color: var(--ink); }
+  body.theme-retention button.secondary:hover { background: var(--border); color: var(--ink); }
+  body.theme-retention button:disabled { background: #ebe4d6; color: #a8a193; }
+  body.theme-retention .option .key { background: var(--border); color: var(--ink); }
+  body.theme-retention .meter-coverage { background: #b0a89a; }
+  body.theme-retention .meter-tier.untouched { background: #ebe4d6; color: var(--dim); }
+  body.theme-retention .topic-bar { background: #ebe4d6; }
+
+  /* Theme toggle button — subtle in both themes */
+  #themeToggle {
+    margin-top: 10px;
+    font-size: 12px;
+    padding: 6px 14px;
+    background: var(--surface);
+    color: var(--muted);
+    border: 1px solid var(--border);
+    font-weight: 500;
+  }
+  #themeToggle:hover { background: var(--surface-hover); color: var(--ink); }
+  body.theme-retention #themeToggle { background: var(--accent-soft); color: var(--accent); border-color: var(--accent-soft); }
+  body.theme-retention #themeToggle:hover { background: #c4d7eb; color: var(--accent-hover); }
+
   * { box-sizing: border-box; }
   body {
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
@@ -276,6 +327,7 @@
   <header>
     <h1>Midterm 2 Practice Quiz</h1>
     <div class="subtitle">225 MCQs + 50 slide-ID · Dr. Mollhoff Weeks 4–6 · Tissues · Histology · Integumentary System</div>
+    <button id="themeToggle" type="button" title="Switch palette to one based on color/memory research (Mehta & Zhu 2009, Dzulkifli & Mustafar 2013)">Switch to Memory-Retention Theme</button>
   </header>
 
   <!-- Setup screen -->
@@ -362,6 +414,35 @@
 </div>
 
 <script>
+/* ============================================================
+   THEME TOGGLE — default dark ↔ memory-retention (light, cream/charcoal/blue)
+   Persists choice in localStorage so it survives reloads.
+   ============================================================ */
+(function(){
+  const KEY = "mt2-theme";
+  const toggle = document.getElementById("themeToggle");
+  const metaScheme = document.querySelector('meta[name="color-scheme"]');
+  const metaColor  = document.querySelector('meta[name="theme-color"]');
+  function apply(theme){
+    const isRet = theme === "retention";
+    document.body.classList.toggle("theme-retention", isRet);
+    document.documentElement.style.colorScheme = isRet ? "light" : "dark";
+    if (metaScheme) metaScheme.setAttribute("content", isRet ? "light" : "dark");
+    if (metaColor)  metaColor.setAttribute("content",  isRet ? "#faf7f2" : "#0b1220");
+    if (toggle) toggle.textContent = isRet
+      ? "Switch to Default (Dark) Theme"
+      : "Switch to Memory-Retention Theme";
+  }
+  let saved = "dark";
+  try { saved = localStorage.getItem(KEY) || "dark"; } catch(e) {}
+  apply(saved);
+  if (toggle) toggle.addEventListener("click", () => {
+    const next = document.body.classList.contains("theme-retention") ? "dark" : "retention";
+    try { localStorage.setItem(KEY, next); } catch(e) {}
+    apply(next);
+  });
+})();
+
 /* ============================================================
    QUESTION BANK (225 Q in main, 50 Q in slide-ID)
    Each: { id, topic, q, options:{A,B,C,D}, answer }
