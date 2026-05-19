@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="color-scheme" content="dark" />
+<meta name="theme-color" content="#0b1220" />
+<title>HistologyGuide.com Slide Quiz — 40 Questions (Mollhoff Weeks 4–6)</title>
+<style>
+  :root {
+    color-scheme: dark;
+    --bg: #0b1220;
+    --card: #111827;
+    --surface: #1f2937;
+    --surface-hover: #243042;
+    --ink: #e5e7eb;
+    --muted: #9ca3af;
+    --dim: #6b7280;
+    --accent: #60a5fa;
+    --accent-hover: #3b82f6;
+    --accent-soft: #1e3a5f;
+    --good: #34d399;
+    --good-soft: #064e3b;
+    --bad: #f87171;
+    --bad-soft: #4c1d24;
+    --warn: #fbbf24;
+    --warn-soft: #422a06;
+    --border: #2a3446;
+  }
+  body.theme-retention {
+    --bg: #faf7f2; --card: #ffffff; --surface: #f0eae0; --surface-hover: #e7dfd1;
+    --ink: #1f2933; --muted: #5b6470; --dim: #8a929c;
+    --accent: #2a6db0; --accent-hover: #1f578f; --accent-soft: #dce8f4;
+    --good: #1f6b40; --good-soft: #d6efdd; --bad: #b03a2e; --bad-soft: #f7dad5;
+    --warn: #8b6914; --warn-soft: #fff4c2; --border: #d6cfc2;
+    color-scheme: light;
+  }
+  body.theme-retention button { background: #1f8a5c; color: #ffffff; }
+  body.theme-retention button:hover { background: #176f4a; }
+  body.theme-retention button.secondary { background: var(--surface-hover); color: var(--ink); }
+  body.theme-retention button.secondary:hover { background: var(--border); }
+
+  #themeToggle {
+    margin-top: 10px; font-size: 12px; padding: 6px 14px;
+    background: var(--surface); color: var(--muted);
+    border: 1px solid var(--border); font-weight: 500;
+  }
+  #themeToggle:hover { background: var(--surface-hover); color: var(--ink); }
+
+  * { box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+    background: var(--bg); color: var(--ink);
+    margin: 0; padding: 16px; line-height: 1.45;
+  }
+  .app { max-width: 1100px; margin: 0 auto; }
+  header { text-align: center; margin-bottom: 18px; }
+  h1 { margin: 0 0 4px 0; font-size: 22px; }
+  .subtitle { color: var(--muted); font-size: 13px; }
+
+  .card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 12px; padding: 18px; margin-bottom: 14px;
+  }
+
+  button {
+    background: var(--accent); color: #fff; border: 0;
+    padding: 10px 18px; font-size: 14px; font-weight: 600;
+    border-radius: 8px; cursor: pointer;
+  }
+  button:hover { background: var(--accent-hover); }
+  button:disabled { background: var(--surface); color: var(--dim); cursor: not-allowed; }
+  button.secondary { background: var(--surface); color: var(--ink); }
+  button.secondary:hover { background: var(--surface-hover); }
+
+  .topbar {
+    display: flex; justify-content: space-between; align-items: center;
+    gap: 10px; flex-wrap: wrap; margin-bottom: 8px;
+    color: var(--muted); font-size: 13px;
+  }
+  .progress {
+    height: 6px; background: var(--surface); border-radius: 3px; overflow: hidden;
+    margin-bottom: 14px;
+  }
+  .progress-fill {
+    height: 100%; background: var(--accent); width: 0%;
+    transition: width 0.25s;
+  }
+  .question-num {
+    font-size: 13px; color: var(--muted);
+    text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 6px;
+  }
+  .topic-tag {
+    display: inline-block; margin-left: 10px;
+    background: var(--accent-soft); color: var(--accent);
+    padding: 2px 8px; border-radius: 4px; font-size: 11px;
+    text-transform: none; letter-spacing: 0;
+  }
+  .question-text {
+    font-size: 16px; margin: 10px 0 14px 0; color: var(--ink);
+  }
+  .slide-frame {
+    width: 100%; height: 520px; border: 1px solid var(--border);
+    border-radius: 8px; overflow: hidden; background: #000;
+    margin-bottom: 8px;
+  }
+  .slide-frame iframe { width: 100%; height: 100%; border: 0; display: block; }
+  .slide-link {
+    display: inline-block; margin-bottom: 14px;
+    font-size: 13px; color: var(--accent);
+  }
+  .slide-link:hover { text-decoration: underline; }
+
+  .options { display: grid; gap: 8px; margin-bottom: 14px; }
+  .option {
+    display: flex; align-items: flex-start; gap: 10px;
+    background: var(--surface); border: 1px solid var(--border);
+    padding: 10px 14px; border-radius: 8px; cursor: pointer;
+    transition: background 0.15s, border-color 0.15s;
+  }
+  .option:hover { background: var(--surface-hover); }
+  .option .key {
+    flex: 0 0 26px; height: 26px; border-radius: 4px;
+    background: var(--border); color: var(--ink);
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 600; font-size: 13px;
+  }
+  .option .text { flex: 1; padding-top: 2px; font-size: 14px; }
+  .option.correct { background: var(--good-soft); border-color: var(--good); }
+  .option.correct .key { background: var(--good); color: #fff; }
+  .option.wrong { background: var(--bad-soft); border-color: var(--bad); }
+  .option.wrong .key { background: var(--bad); color: #fff; }
+  .option.disabled { cursor: default; }
+
+  .feedback {
+    padding: 10px 14px; border-radius: 8px;
+    margin-bottom: 12px; font-size: 14px;
+  }
+  .feedback.good { background: var(--good-soft); color: var(--good); border: 1px solid var(--good); }
+  .feedback.bad  { background: var(--bad-soft);  color: var(--bad);  border: 1px solid var(--bad); }
+
+  .actions {
+    display: flex; gap: 10px; flex-wrap: wrap; margin-top: 8px;
+  }
+  .results-score {
+    font-size: 38px; font-weight: 700; text-align: center; margin: 14px 0;
+  }
+  .results-pct {
+    text-align: center; color: var(--muted); font-size: 14px; margin-bottom: 14px;
+  }
+  .review-item {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 8px; padding: 12px; margin-bottom: 8px; font-size: 13px;
+  }
+  .review-item .rq { font-weight: 600; margin-bottom: 4px; }
+  .review-item .ra { color: var(--good); }
+  .review-item .rm { color: var(--bad); }
+
+  a.backlink {
+    display: inline-block; margin-bottom: 10px;
+    color: var(--accent); font-size: 13px; text-decoration: none;
+  }
+  a.backlink:hover { text-decoration: underline; }
+</style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <a class="backlink" href="index.html">← Back to main quiz</a>
+    <h1>HistologyGuide.com Slide Quiz</h1>
+    <div class="subtitle">40 questions · Live slides from histologyguide.com · Mollhoff Weeks 4–6</div>
+    <button id="themeToggle" type="button">Switch to Memory-Retention Theme</button>
+  </header>
+
+  <div id="setup" class="card">
+    <h2 style="margin-top:0;">Start Quiz</h2>
+    <p style="color: var(--muted); font-size: 14px;">
+      Each question embeds the relevant <strong>HistologyGuide.com</strong> slide viewer directly above
+      the answer choices. You can pan and zoom inside the frame just like on the site.
+      If a slide doesn't load embedded (some viewers block embedding), use the
+      <em>"Open slide in new tab ↗"</em> link below the frame.
+    </p>
+    <p style="color: var(--muted); font-size: 13px;">
+      Topics: Epithelial Tissues (1–10) · Connective Tissues (11–20) ·
+      Muscle &amp; Nervous (21–30) · Integumentary System (31–40)
+    </p>
+    <div class="actions">
+      <button id="startBtn">Start 40-Question Quiz</button>
+      <button id="startShuffleBtn" class="secondary">Shuffle &amp; Start</button>
+    </div>
+  </div>
+
+  <div id="quiz" class="card" style="display:none;">
+    <div class="topbar">
+      <div><strong id="qIndex">1</strong> of <strong id="qTotal">40</strong></div>
+      <div>Correct: <strong id="qCorrect">0</strong> · Missed: <strong id="qWrong">0</strong></div>
+    </div>
+    <div class="progress"><div class="progress-fill" id="progFill"></div></div>
+    <div class="question-num">Question <span id="qNumDisplay">1</span><span id="topicTag" class="topic-tag"></span></div>
+    <div class="question-text" id="qText"></div>
+    <div class="slide-frame" id="slideFrame"></div>
+    <a id="slideLink" class="slide-link" href="#" target="_blank" rel="noopener">Open slide in new tab ↗</a>
+    <div class="options" id="qOptions"></div>
+    <div id="feedback"></div>
+    <div class="actions">
+      <button id="nextBtn" style="display:none;">Next →</button>
+      <button id="skipBtn" class="secondary">Skip</button>
+      <button id="endBtn" class="secondary">End Quiz</button>
+    </div>
+  </div>
+
+  <div id="results" class="card" style="display:none;">
+    <h2 style="margin-top:0; text-align:center;">Quiz Complete</h2>
+    <div class="results-score"><span id="finalScore">0</span>/<span id="finalTotal">0</span></div>
+    <div class="results-pct"><span id="finalPct">0%</span></div>
+    <div class="actions" style="justify-content:center;">
+      <button id="retakeMissedBtn">Retake Missed</button>
+      <button id="restartBtn" class="secondary">Back to Start</button>
+    </div>
+    <h3 style="font-size:15px; margin-top:22px;">Review missed (<span id="missedCount">0</span>)</h3>
+    <div id="reviewList"></div>
+  </div>
+</div>
+
+<script>
+const $ = (id) => document.getElementById(id);
+
+const THEME_KEY = "midterm2_theme";
+const metaScheme = document.querySelector('meta[name="color-scheme"]');
+const metaColor  = document.querySelector('meta[name="theme-color"]');
+function applyTheme(t) {
+  if (t === "retention") {
+    document.body.classList.add("theme-retention");
+    if (metaScheme) metaScheme.content = "light";
+    if (metaColor)  metaColor.content  = "#faf7f2";
+    $("themeToggle").textContent = "Switch to Dark Theme";
+  } else {
+    document.body.classList.remove("theme-retention");
+    if (metaScheme) metaScheme.content = "dark";
+    if (metaColor)  metaColor.content  = "#0b1220";
+    $("themeToggle").textContent = "Switch to Memory-Retention Theme";
+  }
+}
+applyTheme(localStorage.getItem(THEME_KEY) || "dark");
+$("themeToggle").addEventListener("click", () => {
+  const cur = localStorage.getItem(THEME_KEY) || "dark";
+  const next = cur === "retention" ? "dark" : "retention";
+  localStorage.setItem(THEME_KEY, next);
+  applyTheme(next);
+});
+
+const QUESTIONS = [
+  { topic: "Epithelial", url: "https://histologyguide.com/slideview/MH-138-lung/15-slide-1.html",
+    q: "Zoom into the thin walls of the air sacs (alveoli). What is the name of this single layer of flattened cells?",
+    options: ["Simple cuboidal epithelium","Simple squamous epithelium","Stratified squamous epithelium","Mesothelium"], ans: 1 },
+  { topic: "Epithelial", url: "https://histologyguide.com/slideview/MH-134-kidney/16-slide-1.html",
+    q: "Navigate to the circular tubules. You will see a single layer of box-like cells with round, central nuclei. Identify this tissue.",
+    options: ["Simple cuboidal epithelium","Simple columnar epithelium","Transitional epithelium","Stratified cuboidal epithelium"], ans: 0 },
+  { topic: "Epithelial", url: "https://histologyguide.com/slideview/MH-113-small-intestine/14-slide-1.html",
+    q: "Zoom in on the surface lining. Identify these tall, narrow cells and the clear, mucus-secreting cells (Goblet cells) between them.",
+    options: ["Pseudostratified columnar epithelium","Simple columnar epithelium","Simple cuboidal epithelium","Stratified squamous epithelium"], ans: 1 },
+  { topic: "Epithelial", url: "https://histologyguide.com/slideview/MH-123-trachea/15-slide-1.html",
+    q: "Look at the lining with hair-like cilia on top. Although it appears layered, every cell touches the basement membrane. Identify this tissue.",
+    options: ["Simple columnar epithelium","Stratified columnar epithelium","Pseudostratified ciliated columnar epithelium","Transitional epithelium"], ans: 2 },
+  { topic: "Epithelial", url: "https://histologyguide.com/slideview/MH-105-esophagus/14-slide-1.html",
+    q: "Observe the thick apical lining. It has many layers, and the top cells are flat but still contain visible nuclei. Identify this tissue.",
+    options: ["Keratinized stratified squamous epithelium","Non-keratinized stratified squamous epithelium","Transitional epithelium","Stratified cuboidal epithelium"], ans: 1 },
+  { topic: "Epithelial", url: "https://histologyguide.com/slideview/MH-090-thick-skin/11-slide-1.html",
+    q: "Look at the very top surface. The layers are dead, flattened, and lack nuclei. Identify this specific protective tissue.",
+    options: ["Non-keratinized stratified squamous epithelium","Keratinized stratified squamous epithelium","Simple squamous epithelium","Stratified columnar epithelium"], ans: 1 },
+  { topic: "Epithelial", url: "https://histologyguide.com/slideview/MH-140-urinary-bladder/16-slide-1.html",
+    q: "In this slide of the bladder, the top cells are dome-shaped (umbrella cells) to allow for stretching. Identify this tissue.",
+    options: ["Stratified squamous epithelium","Simple cuboidal epithelium","Transitional epithelium","Pseudostratified columnar epithelium"], ans: 2 },
+  { topic: "Epithelial", url: "https://histologyguide.com/slideview/MHS-231-eyelid/02-slide-1.html?x=8644&y=12881&z=92.724",
+    q: "This specific view shows a blood vessel. What is the specific name for the simple squamous epithelium lining the vessel interior?",
+    options: ["Mesothelium","Endothelium","Lamina propria","Epidermis"], ans: 1 },
+  { topic: "Epithelial", url: "https://histologyguide.com/slideview/MH-026-gland/04-slide-1.html",
+    q: "Look at the ducts of these glands. They are often lined by exactly two layers of box-shaped cells. Identify this tissue.",
+    options: ["Simple cuboidal epithelium","Stratified cuboidal epithelium","Stratified squamous epithelium","Simple squamous epithelium"], ans: 1 },
+  { topic: "Epithelial", url: "https://histologyguide.com/slideview/MH-113-small-intestine/14-slide-1.html",
+    q: "Looking at the apical surface of the simple columnar cells, what are the tiny, finger-like projections used to increase surface area for absorption?",
+    options: ["Cilia","Microvilli","Flagella","Desmosomes"], ans: 1 },
+
+  { topic: "Connective", url: "https://histologyguide.com/slideview/MH-021-mesentery/03-slide-1.html",
+    q: "This \"packing material\" tissue features a loose, random web of thick pink collagen fibers and thin dark elastic fibers. Identify this tissue.",
+    options: ["Adipose tissue","Areolar connective tissue","Reticular tissue","Dense regular connective tissue"], ans: 1 },
+  { topic: "Connective", url: "https://histologyguide.com/slideview/MH-022-adipose/03-slide-1.html",
+    q: "These cells look like large, empty white rings because a large lipid droplet pushes the nucleus to the periphery. Identify this tissue.",
+    options: ["Areolar tissue","Hyaline cartilage","Adipose tissue","Dense irregular connective tissue"], ans: 2 },
+  { topic: "Connective", url: "https://histologyguide.com/slideview/MH-024-tendon/03-slide-1.html",
+    q: "This tissue consists of parallel, tightly packed bundles of collagen fibers for resisting pull in one direction. Identify this tissue.",
+    options: ["Dense regular connective tissue","Dense irregular connective tissue","Elastic connective tissue","Fibrocartilage"], ans: 0 },
+  { topic: "Connective", url: "https://histologyguide.com/slideview/MH-091-thin-skin/11-slide-1.html",
+    q: "Navigate to the deep dermis. You will see thick collagen bundles interwoven in random directions. Identify this tissue.",
+    options: ["Dense regular connective tissue","Dense irregular connective tissue","Reticular connective tissue","Hyaline cartilage"], ans: 1 },
+  { topic: "Connective", url: "https://histologyguide.com/slideview/MH-030-hyaline-cartilage/05-slide-1.html",
+    q: "This tissue has a smooth, glassy matrix. The cells (chondrocytes) are located in small \"lakes.\" Identify this tissue.",
+    options: ["Elastic cartilage","Fibrocartilage","Hyaline cartilage","Compact bone"], ans: 2 },
+  { topic: "Connective", url: "https://histologyguide.com/slideview/MH-032-fibrocartilage/05-slide-1.html",
+    q: "This tough, shock-absorbing cartilage features thick, visible wavy bundles of collagen fibers in the matrix. Identify this tissue.",
+    options: ["Hyaline cartilage","Fibrocartilage","Dense regular connective tissue","Elastic cartilage"], ans: 1 },
+  { topic: "Connective", url: "https://histologyguide.com/slideview/MH-040-compact-bone/05-slide-1.html",
+    q: "Look at the \"target-like\" circular structures. What is the name of one of these entire structural units?",
+    options: ["Osteon","Central Canal","Lacuna","Trabecula"], ans: 0 },
+  { topic: "Connective", url: "https://histologyguide.com/slideview/MH-040-compact-bone/05-slide-1.html",
+    q: "Find the small, dark, spider-like spaces where mature bone cells live. What are these spaces called?",
+    options: ["Canaliculi","Lacunae","Central canals","Lamellae"], ans: 1 },
+  { topic: "Connective", url: "https://histologyguide.com/slideview/MH-015-blood-smear/06-slide-1.html",
+    q: "In this smear, the numerous small, pink, biconcave cells without nuclei are:",
+    options: ["Leukocytes","Platelets","Erythrocytes (RBCs)","Fibroblasts"], ans: 2 },
+  { topic: "Connective", url: "https://histologyguide.com/slideview/MH-023-reticular-tissue/03-slide-1.html",
+    q: "This tissue forms a delicate, branching meshwork (stroma) that supports soft organs like the spleen. Identify this tissue.",
+    options: ["Areolar tissue","Dense irregular tissue","Reticular connective tissue","Elastic tissue"], ans: 2 },
+
+  { topic: "Muscle/Nervous", url: "https://histologyguide.com/slideview/MH-051-skeletal-muscle/04-slide-1.html",
+    q: "These long, cylindrical cells have visible perpendicular stripes (striations) and multiple nuclei pushed to the edges. Identify this tissue.",
+    options: ["Smooth muscle","Cardiac muscle","Skeletal muscle","Dense regular connective tissue"], ans: 2 },
+  { topic: "Muscle/Nervous", url: "https://histologyguide.com/slideview/MH-054-cardiac-muscle/04-slide-1.html",
+    q: "These striated cells are branched and have dark lines (intercalated discs) connecting them. Identify this tissue.",
+    options: ["Skeletal muscle","Smooth muscle","Cardiac muscle","Nervous tissue"], ans: 2 },
+  { topic: "Muscle/Nervous", url: "https://histologyguide.com/slideview/MH-056-smooth-muscle/04-slide-1.html",
+    q: "These spindle-shaped cells lack striations and have a single central nucleus. Identify this tissue.",
+    options: ["Skeletal muscle","Smooth muscle","Cardiac muscle","Fibrocartilage"], ans: 1 },
+  { topic: "Muscle/Nervous", url: "https://histologyguide.com/slideview/MH-081-spinal-cord/07-slide-1.html",
+    q: "Look for the large, star-shaped cells with long processes. What are these primary signaling cells called?",
+    options: ["Neuroglia","Neurons (Multipolar)","Astrocytes","Schwann cells"], ans: 1 },
+  { topic: "Muscle/Nervous", url: "https://histologyguide.com/slideview/MH-081-spinal-cord/07-slide-1.html",
+    q: "Around the neurons are many tiny \"dots.\" These are the nuclei of cells that support and protect the neurons. What are they?",
+    options: ["Fibroblasts","Chondrocytes","Neuroglia (Glial cells)","Adipocytes"], ans: 2 },
+  { topic: "Muscle/Nervous", url: "https://histologyguide.com/slideview/MH-051-skeletal-muscle/04-slide-1.html",
+    q: "Change the view to the cross-section (CS) of skeletal muscle. The cells look like large polygons. The connective tissue wrapping around each individual muscle fiber is the:",
+    options: ["Epimysium","Perimysium","Endomysium","Fascicle"], ans: 2 },
+  { topic: "Muscle/Nervous", url: "https://histologyguide.com/slideview/MH-054-cardiac-muscle/04-slide-1.html",
+    q: "What is the physiological function of the gap junctions found within the intercalated discs of this tissue?",
+    options: ["To anchor the cells to bone","To allow rapid electrical communication between cells","To produce mucus","To store calcium"], ans: 1 },
+  { topic: "Muscle/Nervous", url: "https://histologyguide.com/slideview/MH-056-smooth-muscle/04-slide-1.html",
+    q: "Where in the body would you most likely find this non-striated, involuntary muscle tissue?",
+    options: ["Attached to the femur","In the wall of the heart","In the wall of the stomach or blood vessels","In the brain"], ans: 2 },
+  { topic: "Muscle/Nervous", url: "https://histologyguide.com/slideview/MH-015-blood-smear/06-slide-1.html",
+    q: "Find a large cell with a multi-lobed, dark purple nucleus. This is a type of white blood cell (leukocyte) called a:",
+    options: ["Erythrocyte","Neutrophil","Platelet","Chondrocyte"], ans: 1 },
+  { topic: "Muscle/Nervous", url: "https://histologyguide.com/slideview/MH-025-elastic-tissue/03-slide-1.html",
+    q: "This specialized connective tissue is found in the walls of large arteries and allows them to recoil after stretching. Identify this tissue.",
+    options: ["Dense regular connective tissue","Elastic connective tissue","Reticular connective tissue","Hyaline cartilage"], ans: 1 },
+
+  { topic: "Integumentary", url: "https://histologyguide.com/slideview/MH-091-thin-skin/11-slide-1.html",
+    q: "Look at the epidermis. The deepest layer, sitting directly on the wavy basement membrane, is the:",
+    options: ["Stratum corneum","Stratum granulosum","Stratum basale","Stratum spinosum"], ans: 2 },
+  { topic: "Integumentary", url: "https://histologyguide.com/slideview/MH-090-thick-skin/11-slide-1.html",
+    q: "In this \"thick skin\" slide, identify the thin, clear layer located between the stratum corneum and stratum granulosum.",
+    options: ["Stratum lucidum","Stratum spinosum","Stratum basale","Papillary layer"], ans: 0 },
+  { topic: "Integumentary", url: "https://histologyguide.com/slideview/MH-091-thin-skin/11-slide-1.html",
+    q: "Find a hair follicle. Identify the small band of smooth muscle attached to it that causes \"goosebumps.\"",
+    options: ["Papillary muscle","Arrector pili muscle","Reticular muscle","Myocardium"], ans: 1 },
+  { topic: "Integumentary", url: "https://histologyguide.com/slideview/MH-092-scalp/11-slide-1.html",
+    q: "Look at the glands attached to the hair follicles that look like clusters of grapes. They secrete oil (sebum). What are they?",
+    options: ["Eccrine sweat glands","Apocrine sweat glands","Sebaceous glands","Ceruminous glands"], ans: 2 },
+  { topic: "Integumentary", url: "https://histologyguide.com/slideview/MH-091-thin-skin/11-slide-1.html",
+    q: "Find the coiled, tubular glands in the dermis that open directly to the skin surface via a duct. These are:",
+    options: ["Sebaceous glands","Eccrine (merocrine) sweat glands","Apocrine sweat glands","Endocrine glands"], ans: 1 },
+  { topic: "Integumentary", url: "https://histologyguide.com/slideview/MH-091-thin-skin/11-slide-1.html",
+    q: "Zoom in on the \"wavy\" boundary between the epidermis and dermis. These upward projections of the dermis are called:",
+    options: ["Dermal papillae","Cleavage lines","Striae","Osteons"], ans: 0 },
+  { topic: "Integumentary", url: "https://histologyguide.com/slideview/MH-091-thin-skin/11-slide-1.html",
+    q: "Look at the very thin, superficial layer of the dermis made of areolar tissue. This is the:",
+    options: ["Reticular layer","Papillary layer","Hypodermis","Stratum basale"], ans: 1 },
+  { topic: "Integumentary", url: "https://histologyguide.com/slideview/MH-091-thin-skin/11-slide-1.html",
+    q: "Navigate to the deepest part of the slide. You will see large clusters of adipocytes (fat). What layer is this?",
+    options: ["Epidermis","Dermis","Hypodermis (Subcutaneous layer)","Stratum corneum"], ans: 2 },
+  { topic: "Integumentary", url: "https://histologyguide.com/slideview/MH-091-thin-skin/11-slide-1.html",
+    q: "In the dermal papillae, look for small, oval-shaped sensory receptors for light touch. These are:",
+    options: ["Meissner (tactile) corpuscles","Pacinian (lamellated) corpuscles","Merkel cells","Melanocytes"], ans: 0 },
+  { topic: "Integumentary", url: "https://histologyguide.com/slideview/MH-091-thin-skin/11-slide-1.html",
+    q: "Look deep in the dermis or hypodermis for large, onion-like receptors that detect deep pressure. These are:",
+    options: ["Meissner corpuscles","Pacinian (lamellated) corpuscles","Langerhans cells","Free nerve endings"], ans: 1 },
+];
+
+const state = {
+  pool: [], idx: 0, correct: 0, wrong: 0, missed: [], answered: false,
+};
+
+function show(view) {
+  $("setup").style.display   = view === "setup"   ? "" : "none";
+  $("quiz").style.display    = view === "quiz"    ? "" : "none";
+  $("results").style.display = view === "results" ? "" : "none";
+}
+function shuffle(arr) {
+  const a = arr.slice();
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function beginQuiz(pool) {
+  state.pool = pool;
+  state.idx = 0; state.correct = 0; state.wrong = 0;
+  state.missed = []; state.answered = false;
+  $("qTotal").textContent = pool.length;
+  show("quiz");
+  renderQuestion();
+}
+
+function renderQuestion() {
+  state.answered = false;
+  const q = state.pool[state.idx];
+  $("qIndex").textContent = state.idx + 1;
+  $("qNumDisplay").textContent = state.idx + 1;
+  $("qCorrect").textContent = state.correct;
+  $("qWrong").textContent = state.wrong;
+  $("progFill").style.width = ((state.idx) / state.pool.length * 100) + "%";
+  $("topicTag").textContent = q.topic;
+  $("qText").textContent = q.q;
+
+  $("slideFrame").innerHTML =
+    `<iframe src="${q.url}" loading="lazy" referrerpolicy="no-referrer" allow="fullscreen"></iframe>`;
+  $("slideLink").href = q.url;
+
+  const opts = $("qOptions");
+  opts.innerHTML = "";
+  q.options.forEach((text, i) => {
+    const div = document.createElement("div");
+    div.className = "option";
+    div.innerHTML = `<div class="key">${String.fromCharCode(65 + i)}</div><div class="text">${text}</div>`;
+    div.addEventListener("click", () => choose(i, div));
+    opts.appendChild(div);
+  });
+  $("feedback").innerHTML = "";
+  $("nextBtn").style.display = "none";
+  $("skipBtn").style.display = "";
+}
+
+function choose(i, el) {
+  if (state.answered) return;
+  state.answered = true;
+  const q = state.pool[state.idx];
+  const opts = $("qOptions").children;
+  for (let j = 0; j < opts.length; j++) opts[j].classList.add("disabled");
+  if (i === q.ans) {
+    el.classList.add("correct");
+    state.correct++;
+    $("feedback").innerHTML = `<div class="feedback good">Correct!</div>`;
+  } else {
+    el.classList.add("wrong");
+    opts[q.ans].classList.add("correct");
+    state.wrong++;
+    state.missed.push({ q, picked: i });
+    $("feedback").innerHTML =
+      `<div class="feedback bad">Not quite — correct answer: <strong>${String.fromCharCode(65 + q.ans)}. ${q.options[q.ans]}</strong></div>`;
+  }
+  $("qCorrect").textContent = state.correct;
+  $("qWrong").textContent = state.wrong;
+  $("nextBtn").style.display = "";
+  $("skipBtn").style.display = "none";
+}
+
+function nextQuestion() {
+  state.idx++;
+  if (state.idx >= state.pool.length) finishQuiz();
+  else renderQuestion();
+}
+
+function finishQuiz() {
+  show("results");
+  const total = state.pool.length;
+  const pct = total ? Math.round(state.correct / total * 100) : 0;
+  $("finalScore").textContent = state.correct;
+  $("finalTotal").textContent = total;
+  $("finalPct").textContent = pct + "%";
+  $("missedCount").textContent = state.missed.length;
+  const rl = $("reviewList");
+  rl.innerHTML = "";
+  state.missed.forEach(({ q, picked }) => {
+    const d = document.createElement("div");
+    d.className = "review-item";
+    d.innerHTML =
+      `<div class="rq">${q.q}</div>` +
+      `<div class="rm">Your answer: ${String.fromCharCode(65 + picked)}. ${q.options[picked]}</div>` +
+      `<div class="ra">Correct: ${String.fromCharCode(65 + q.ans)}. ${q.options[q.ans]}</div>` +
+      `<div style="margin-top:6px;"><a href="${q.url}" target="_blank" rel="noopener" style="color:var(--accent);">Open slide ↗</a></div>`;
+    rl.appendChild(d);
+  });
+}
+
+$("startBtn").addEventListener("click", () => beginQuiz(QUESTIONS));
+$("startShuffleBtn").addEventListener("click", () => beginQuiz(shuffle(QUESTIONS)));
+$("nextBtn").addEventListener("click", nextQuestion);
+$("skipBtn").addEventListener("click", () => {
+  if (!state.answered) {
+    const q = state.pool[state.idx];
+    state.wrong++;
+    state.missed.push({ q, picked: -1 });
+    $("qWrong").textContent = state.wrong;
+  }
+  nextQuestion();
+});
+$("endBtn").addEventListener("click", finishQuiz);
+$("retakeMissedBtn").addEventListener("click", () => {
+  if (!state.missed.length) return;
+  beginQuiz(state.missed.map(m => m.q));
+});
+$("restartBtn").addEventListener("click", () => show("setup"));
+</script>
+</body>
+</html>
