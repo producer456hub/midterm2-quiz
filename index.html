@@ -349,6 +349,31 @@
     <div style="display:flex; gap:10px; flex-wrap:wrap;">
       <button id="startBtn">Start Quiz (225 MCQs)</button>
       <button id="startSlideBtn" class="secondary">Start Slide-ID Quiz (50 Lecture Slides)</button>
+      <button id="byCategoryBtn" class="secondary">Quiz by Category</button>
+    </div>
+
+    <!-- Category picker (hidden by default) -->
+    <div id="categoryPicker" style="display:none; margin-top:16px; padding:14px; background:var(--surface); border-radius:8px; border:1px solid var(--border);">
+      <div style="display:flex; justify-content:space-between; align-items:baseline; gap:10px; flex-wrap:wrap; margin-bottom:10px;">
+        <h3 style="margin:0; font-size:14px;">Pick categories to quiz</h3>
+        <div style="display:flex; gap:6px;">
+          <button id="catSelectAll" class="secondary" style="font-size:12px; padding:5px 10px;">Select all</button>
+          <button id="catClear" class="secondary" style="font-size:12px; padding:5px 10px;">Clear</button>
+        </div>
+      </div>
+      <div style="margin-bottom:10px;">
+        <label style="display:inline-flex; align-items:center; gap:6px; font-size:13px; color:var(--muted);">
+          <input type="radio" name="catBank" value="main" checked /> MCQ bank (225)
+        </label>
+        <label style="display:inline-flex; align-items:center; gap:6px; font-size:13px; color:var(--muted); margin-left:14px;">
+          <input type="radio" name="catBank" value="slide" /> Slide-ID bank (50)
+        </label>
+      </div>
+      <div id="categoryList" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(240px, 1fr)); gap:8px;"></div>
+      <div style="margin-top:12px; display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+        <button id="startCategoryBtn" disabled>Start Selected (0)</button>
+        <span id="catSummary" style="color:var(--muted); font-size:13px;"></span>
+      </div>
     </div>
     <p style="color: var(--muted); font-size: 12px; margin-top: 12px;">
       The Slide-ID Quiz asks you to identify tissues and structures from Dr. Mollhoff's
@@ -867,6 +892,100 @@ function beginQuiz(bank, bankName) {
 
 $("startBtn").addEventListener("click", () => beginQuiz(QUESTIONS, "main"));
 $("startSlideBtn").addEventListener("click", () => beginQuiz(SLIDE_QUESTIONS, "slide"));
+
+/* ============================================================
+   CATEGORY-FILTERED QUIZ MODE
+   Lets user select one or more topics from either bank and
+   quiz only the matching questions. Reuses beginQuiz pipeline.
+   ============================================================ */
+(function(){
+  const picker     = $("categoryPicker");
+  const listEl     = $("categoryList");
+  const startBtn   = $("startCategoryBtn");
+  const summaryEl  = $("catSummary");
+  const openBtn    = $("byCategoryBtn");
+  const selectAllBtn = $("catSelectAll");
+  const clearBtn     = $("catClear");
+
+  function activeBank() {
+    const val = document.querySelector('input[name="catBank"]:checked').value;
+    return val === "slide"
+      ? { bank: SLIDE_QUESTIONS, name: "slide" }
+      : { bank: QUESTIONS,       name: "main"  };
+  }
+
+  function buildTopicIndex(bank) {
+    const counts = {};
+    bank.forEach(q => { counts[q.topic] = (counts[q.topic] || 0) + 1; });
+    return Object.keys(counts).sort().map(t => ({ topic: t, count: counts[t] }));
+  }
+
+  function renderList() {
+    const { bank } = activeBank();
+    const topics = buildTopicIndex(bank);
+    listEl.innerHTML = "";
+    topics.forEach(({ topic, count }) => {
+      const id = "cat-" + topic.replace(/[^a-z0-9]/gi, "_");
+      const lbl = document.createElement("label");
+      lbl.style.cssText = "display:flex; align-items:center; gap:8px; padding:8px 10px; border:1px solid var(--border); border-radius:6px; background:var(--card); font-size:13px; cursor:pointer;";
+      lbl.innerHTML = `
+        <input type="checkbox" class="cat-cb" data-topic="${topic.replace(/"/g, '&quot;')}" id="${id}" />
+        <span style="flex:1;">${topic}</span>
+        <span style="color:var(--muted); font-size:12px;">${count}</span>
+      `;
+      listEl.appendChild(lbl);
+    });
+    updateCount();
+  }
+
+  function selectedTopics() {
+    return Array.from(listEl.querySelectorAll(".cat-cb:checked"))
+      .map(cb => cb.dataset.topic);
+  }
+
+  function updateCount() {
+    const { bank } = activeBank();
+    const picked = selectedTopics();
+    const pickedSet = new Set(picked);
+    const total = bank.filter(q => pickedSet.has(q.topic)).length;
+    startBtn.textContent = `Start Selected (${total})`;
+    startBtn.disabled = total === 0;
+    summaryEl.textContent = picked.length
+      ? `${picked.length} categor${picked.length === 1 ? "y" : "ies"} · ${total} question${total === 1 ? "" : "s"}`
+      : "No categories selected yet";
+  }
+
+  openBtn.addEventListener("click", () => {
+    const wasHidden = picker.style.display === "none";
+    picker.style.display = wasHidden ? "" : "none";
+    if (wasHidden) renderList();
+  });
+
+  document.querySelectorAll('input[name="catBank"]').forEach(r => {
+    r.addEventListener("change", renderList);
+  });
+
+  listEl.addEventListener("change", (e) => {
+    if (e.target.classList.contains("cat-cb")) updateCount();
+  });
+
+  selectAllBtn.addEventListener("click", () => {
+    listEl.querySelectorAll(".cat-cb").forEach(cb => cb.checked = true);
+    updateCount();
+  });
+  clearBtn.addEventListener("click", () => {
+    listEl.querySelectorAll(".cat-cb").forEach(cb => cb.checked = false);
+    updateCount();
+  });
+
+  startBtn.addEventListener("click", () => {
+    const { bank, name } = activeBank();
+    const pickedSet = new Set(selectedTopics());
+    const filtered = bank.filter(q => pickedSet.has(q.topic));
+    if (filtered.length === 0) return;
+    beginQuiz(filtered, name);
+  });
+})();
 
 /* ============================================================
    QUIZ NAVIGATION
